@@ -1,0 +1,24 @@
+.container-fluid {
+    display:inline-flex;
+    height: 80vh;
+    padding: 8%;
+}
+
+.btn.vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn {
+    background-color: rgba(0, 0, 0, 0.658);
+    color: white;
+    margin: 4%;
+    padding: 1%;
+    width:20%;
+}
+
+.btn:hover {
+    color: white;
+    transform: scale(1.1);
+}

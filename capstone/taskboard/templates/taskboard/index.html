@@ -1,0 +1,24 @@
+{% extends "taskboard/layout.html" %}
+{% load static %}
+{% block title %}
+  Home
+{% endblock %}
+{% block import_scripts %}
+    <link href="{% static 'taskboard/css/index.css' %}" rel="stylesheet">
+{% endblock %}
+{% block main %}
+    <div class="container-fluid justify-content-md-center">
+        <button class="btn vertical" type="button">
+            <i class="bi bi-plus-square fa-5x"></i>
+            <br>
+            <span><h2>Create New <br>Taskboard</h2></span>
+            <br><br>
+        </button>
+        <button class="btn vertical" type="button">
+            <i class="bi bi-grid-3x3-gap fa-5x"></i>
+            <br>
+            <span><h2>Go to My <br>Taskboards</h2></span>
+            <br><br>
+        </button>
+    </div>
+{% endblock %}

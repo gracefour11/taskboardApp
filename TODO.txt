@@ -1,0 +1,8 @@
+1. Create models for Taskboard, User2Taskboard, Task, Section
+2. Do Create Taskboard modal (copy over from previous version)
+3. Do View My Taskboards page
+4. Do CRUD functionalities for Taskboard (delete must have alert function)
+5. Do Taskboard page
+6. Do CRUD functionalities for Section
+7. Do dynamic increasing of sections (with max=5)
+8. Do CRUD functionalities for Task

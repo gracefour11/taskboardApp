@@ -1,0 +1,77 @@
+{% extends "taskboard/layout.html" %}
+
+{% load static %}
+
+{% block title %}
+  Welcome to Taskboard!
+{% endblock %}
+
+{% block import_scripts %}
+    <link href="{% static 'taskboard/css/welcome.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+<div id="welcome-view">
+<div class="card w-50 mx-auto my-auto " id="welcome-card">
+    <div class="row justify-content-md-center">
+        <h1 class="card-title text-center" style="color:rgb(0, 16, 87); font-weight:bolder">
+            Welcome to Taskboard!
+        </h1>
+    </div>
+    <br><br>
+    <div class="row justify-content-md-center">
+        <div class="col-md-8 col-md-offset-2">
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item text-center" id="nav-item-login">
+                    <a class="nav-link active" href="#login-contents" id="login-tab" data-bs-toggle="tab">Login</a>
+                </li>
+                <li class="nav-item text-center" id="nav-item-register">
+                    <a class="nav-link"  href="#register-contents" id="register-tab" data-bs-toggle="tab">Register</a>
+                </li>
+            
+            </ul>
+            <div class="tab-content">
+                <div id="login-contents" class="tab-pane active" >
+                    <form action="{% url 'login' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" name="username">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password">
+                        </div>
+                        <input class="btn btn-primary" type="submit" value="Login">
+                    </form>
+                </div>
+                <div id="register-contents" class="tab-pane fade">
+                    <form action="{% url 'register' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="reg_username" class="form-label">Username</label>
+                            <input type="text" class="form-control" name="reg_username">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="reg_email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" name="reg_email" aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="reg_password" class="form-label">Password</label>
+                            <input type="password" class="form-control" name="reg_password">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="reg_confirmation" class="form-label">Confirm Password</label>
+                            <input class="form-control" type="password" name="reg_confirmation">
+                        </div>
+                        <input class="btn btn-primary" type="submit" value="Register">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
