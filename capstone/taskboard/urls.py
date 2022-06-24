@@ -9,5 +9,6 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
 
-    path("taskboards", views.taskboards_view, name="my_taskboards")
+    path("taskboards", views.taskboards_view, name="my_taskboards"),
+    path("taskboard/create", views.create_taskboard, name="create_taskboard")
 ]

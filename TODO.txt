@@ -1,8 +1,13 @@
-1. Create models for Taskboard, User2Taskboard, Task, Section
-2. Do Create Taskboard modal (copy over from previous version)
-3. Do View My Taskboards page
-4. Do CRUD functionalities for Taskboard (delete must have alert function)
-5. Do Taskboard page
-6. Do CRUD functionalities for Section
-7. Do dynamic increasing of sections (with max=5)
-8. Do CRUD functionalities for Task
+Create models for Taskboard (DONE), User2Taskboard (DONE), 
+Do Create Taskboard form (copy over from previous version)
+    - Need to find a better way to load the Users
+    - Currently load users filters list from backend: not staff, not request user
+    - Perhaps we can create api to get the list to excude staff, request user and added members
+    - Allow remove members too (like the google doc type)
+Do View My Taskboards page
+Do CRUD functionalities for Taskboard (delete must have alert function)
+Do Taskboard page
+Create models for Section and Task 
+Do CRUD functionalities for Section
+Do dynamic increasing of sections (with max=5)
+Do CRUD functionalities for Task

@@ -5,20 +5,92 @@
 {% endblock %}
 {% block import_scripts %}
     <link href="{% static 'taskboard/css/index.css' %}" rel="stylesheet">
+    <script type ="text/javascript" src="{% static 'taskboard/js/index.js' %}"></script>
 {% endblock %}
 {% block main %}
-    <div class="container-fluid justify-content-md-center">
-        <button class="btn vertical" type="button">
-            <i class="bi bi-plus-square fa-5x"></i>
-            <br>
-            <span><h2>Create New <br>Taskboard</h2></span>
-            <br><br>
-        </button>
-        <button class="btn vertical" type="button">
-            <i class="bi bi-grid-3x3-gap fa-5x"></i>
-            <br>
-            <span><h2>Go to My <br>Taskboards</h2></span>
-            <br><br>
-        </button>
-    </div>
+<!-- taskboard MODAL start -->
+<div class="modal" tabindex="-1" role="dialog" id="taskboardModal">
+{% if user.is_authenticated %}
+    <div class="modal-dialog" style="max-width:60%; vertical-align: middle;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="taskboard-modal-title" ></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeTaskboardModal();"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form id="taskboard_form" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="taskboard_name" class="col-sm-2 col-form-label">Title:</label>	&nbsp;
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" placeholder="Enter Title" name="taskboard_name" id="taskboard_name" value="">
+                        </div> 
+                    </div> <br>
+                    <div class="form-group row">
+                        <label for="taskboard_deadline" class="col-sm-2 col-form-label">Deadline:</label>	&nbsp;
+                        <div class="col-sm-9">
+                            <input type="date" class="form-control" placeholder="Enter Deadline" name="taskboard_deadline" id="taskboard_deadline">
+                        </div> 
+                    </div> <br>
+                    <div class="form-group row">
+                        <label for="taskboard_type" class="col-sm-2 col-form-label">Type:</label>	&nbsp;
+                        <div class="col-sm-9">
+                            {% for radio in form.taskboard_type %}
+                                <label for="{{ radio.id_for_label }}">
+                                    {{ radio.choice_label }}
+                                    <span class="radio">{{ radio.tag }}</span>
+                                </label>
+                                &nbsp;                        
+                            {% endfor %}
+                        </div> 
+                    </div> 
+                    <div class="form-group row" style="display:none;">
+                        <label for="taskboard_members" class="col-sm-2 col-form-label"></label>	&nbsp;
+                        <input type="text" class="form-control" id="taskboard_members" name="taskboard_members" value="" />
+                    </div>
+                    <div id="showAddMembersDiv" style="display:none;">
+                        <span  class="form-group row">
+                            <label for="members" class="col-sm-2 col-form-label">Members:</label>	&nbsp;
+                            <div class="col-sm-9">
+                                <input type="text" list="members" id="member_to_be_added"/>
+                                <datalist id="members">
+                                    {% for member in all_users %}
+                                        <option value="{{member.username}}" data-value="{{member.id}}" ></option>
+                                    {% endfor %}
+                                </datalist>
+                                <button type="button" class="btn btn-info" onclick="addMember()"> Add </button>
+                                <div id="showMemberList"></div>
+                            </div> 
+                        </span>
+                    </div> 
+
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closeTaskboardModal();">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submit-taskboard-btn">
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+{% endif %}
+</div><!-- /.modal -->
+<!-- taskboard MODAL end -->
+
+
+
+<div class="container-fluid justify-content-md-center">
+    <button class="btn vertical" type="button" onclick="createTaskboard();">
+        <i class="bi bi-plus-square fa-5x"></i>
+        <br>
+        <span><h2>Create New <br>Taskboard</h2></span>
+        <br><br>
+    </button>
+    <button class="btn vertical" type="button">
+        <i class="bi bi-grid-3x3-gap fa-5x"></i>
+        <br>
+        <span><h2>Go to My <br>Taskboards</h2></span>
+        <br><br>
+    </button>
+</div>
 {% endblock %}
