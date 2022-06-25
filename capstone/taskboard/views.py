@@ -8,10 +8,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.http.response import JsonResponse
 import json
-from django.core import serializers
-from .models import *
-from . import forms
 
+from .models import *
+from .forms import *
 
 ###################################################
 ### LOGIN CURRENT USER
@@ -81,23 +80,27 @@ def welcome(request):
 ###################################################
 def index(request):
     if request.user.is_authenticated:
-        all_users = load_all_users(request)
-        form = forms.CreateEditProjectForm()
+        # all_users = load_all_users(request)
+        form = CreateEditProjectForm()
         return render(request, "taskboard/index.html", {
-            'all_users': all_users,
+            # 'all_users': all_users,
             'form': form
         })
     return HttpResponseRedirect(reverse("welcome"))
 
 ###################################################
-### FUNCTION TO LOAD ALL USERS THAT ARE NOT STAFF OR CURRENT REQUEST USER
+### FUNCTION TO LOAD ALL USERS THAT ARE NOT STAFF OR CURRENT REQUEST USER OR INSIDE LIST
 ###################################################
 def load_all_users(request):
     if request.user.is_authenticated:
         print("load all users")
         all_users = User.objects.filter(is_superuser=0, is_staff=0).exclude(id=request.user.id)
+        print("all_users: ")
         print(all_users)
-        return all_users
+        # return all_users
+        return JsonResponse({
+            'all_users': [user.serialize() for user in all_users]
+        })
 
 ###################################################
 ### MY TASKBOARDS PAGE
@@ -114,7 +117,7 @@ def create_taskboard(request):
     print("in create_taskboard")
     print(request.method)
     if (request.method == "POST"):
-        form = forms.CreateEditProjectForm(request.POST)
+        form = CreateEditProjectForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data["taskboard_name"]
             type = form.cleaned_data["taskboard_type"]
@@ -160,7 +163,7 @@ def create_taskboard(request):
             "form": form
         })
     else:
-        form = forms.CreateEditProjectForm()
+        form = CreateEditProjectForm()
         return render(request, "taskboard/index.html", {
             "form": form
         })

@@ -3,7 +3,15 @@ from django.db import models
 import json
 
 class User(AbstractUser):
-    pass
+    def serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username
+        }
+    
+    def getDict(self):
+        dict = self.serialize()
+        return json.dumps(dict)
 
 class Taskboard(models.Model):
     title = models.CharField(max_length=200, default=None)

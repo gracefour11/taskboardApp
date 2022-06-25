@@ -10,5 +10,6 @@ urlpatterns = [
     path("register", views.register, name="register"),
 
     path("taskboards", views.taskboards_view, name="my_taskboards"),
-    path("taskboard/create", views.create_taskboard, name="create_taskboard")
+    path("taskboard/create", views.create_taskboard, name="create_taskboard"),
+    path("taskboards/load_users", views.load_all_users, name="load_all_users")
 ]
