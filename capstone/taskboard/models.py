@@ -38,7 +38,7 @@ class Taskboard(models.Model):
 
 class User2Taskboard(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="userId")
-    taskboard = models.ForeignKey(Taskboard,on_delete=models.CASCADE,related_name="taskboardId")
+    taskboard = models.ForeignKey(Taskboard,on_delete=models.CASCADE,related_name="taskboardId", related_query_name="user2taskboard")
     user_role = models.CharField(max_length=10, default=None) #user's role in the taskboard: owner or member
     created_dt = models.DateTimeField(auto_now_add=True, auto_now=False)
     last_modified_dt = models.DateTimeField(auto_now_add=False, auto_now=True)

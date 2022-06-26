@@ -11,6 +11,7 @@ import json
 
 from .models import *
 from .forms import *
+from .constants import *
 
 ###################################################
 ### LOGIN CURRENT USER
@@ -103,11 +104,24 @@ def load_all_users(request):
         })
 
 ###################################################
-### MY TASKBOARDS PAGE
+### VIEW ALL MY TASKBOARDS PAGE
 ###################################################
 def taskboards_view(request):
-    # TODO for view my taskboards page
-    return render(request, "taskboard/myTaskboards.html")
+    user = User.objects.get(id=request.session['_auth_user_id'])
+    # retrieve the taskboard ids from USer2Taskboard
+    individualTBs = Taskboard.objects.filter(type=TASKBOARD_TYPE_IND, user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_OWNER)
+    groupTBsOwnedByMe = Taskboard.objects.filter(type=TASKBOARD_TYPE_GRP, user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_OWNER)
+    groupTBsOwnedByOthers = Taskboard.objects.filter(type=TASKBOARD_TYPE_GRP, user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_MEMBER)
+
+    print(individualTBs)
+    print(groupTBsOwnedByMe)
+    print(groupTBsOwnedByOthers)
+    # retrieve the taskboards by filtering the list of ids retrieved from USer2Taskboard
+    return render(request, "taskboard/myTaskboards.html", {
+        'individualTBs': individualTBs,
+        'groupTBsOwnedByMe': groupTBsOwnedByMe,
+        'groupTBsOwnedByOthers': groupTBsOwnedByOthers
+    })
 
 ###################################################
 ### FUNCTION TO CREATE TASKBOARD
@@ -141,7 +155,7 @@ def create_taskboard(request):
 
                 # linking owner to taskboard
                 owner = User.objects.get(id=request.session['_auth_user_id'])
-                user2Taskboard_forOwner = User2Taskboard(user=owner, taskboard=taskboard, user_role="OWNER")
+                user2Taskboard_forOwner = User2Taskboard(user=owner, taskboard=taskboard, user_role=USER_ROLE_OWNER)
                 user2Taskboard_forOwner.save()
                 print("Successfully Inserted User2Taskboard (for owner) into DB: " + user2Taskboard_forOwner.getDict())
 
@@ -151,7 +165,7 @@ def create_taskboard(request):
                     members_id_list = members.split(",")
                     for member_id in members_id_list:
                         member = User.objects.get(id=member_id)
-                        user2Taskboard_forMember = User2Taskboard(user=member, taskboard=taskboard, user_role="MEMBER")
+                        user2Taskboard_forMember = User2Taskboard(user=member, taskboard=taskboard, user_role=USER_ROLE_MEMBER)
                         user2Taskboard_forMember.save()
                         print("Successfully Inserted User2Taskboard (for member) into DB: " + user2Taskboard_forMember.getDict())
 
@@ -169,10 +183,13 @@ def create_taskboard(request):
         })
 
 ###################################################
-### FUNCTION TO load TASKBOARD
+### FUNCTION TO GO TO TASKBOARD PAGE
 ###################################################
 @login_required
 def go_to_taskboard(request, boardId):
     return render(request, "taskboard/taskboard.html", {
         "boardId": boardId
     })
+
+
+
