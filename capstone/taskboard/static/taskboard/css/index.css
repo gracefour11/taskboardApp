@@ -10,7 +10,7 @@
     align-items: center;
 }
 
-.btn {
+#create-taskboard-btn, #go-to-my-taskboards-btn {
     background-color: rgba(0, 0, 0, 0.658);
     color: white;
     margin: 4%;
@@ -19,7 +19,6 @@
 }
 
 .btn:hover {
-    color: white;
     transform: scale(1.1);
 }
 

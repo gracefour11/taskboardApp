@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect,HttpResponseNotAllowed
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -155,7 +155,7 @@ def create_taskboard(request):
                         user2Taskboard_forMember.save()
                         print("Successfully Inserted User2Taskboard (for member) into DB: " + user2Taskboard_forMember.getDict())
 
-                return render(request, "taskboard/taskboard.html")
+                return redirect(reverse('go_to_taskboard', kwargs={ 'boardId': taskboard.id }))
             return render(request, "taskboard/index.html", {
                 "form": form
             })
@@ -167,3 +167,12 @@ def create_taskboard(request):
         return render(request, "taskboard/index.html", {
             "form": form
         })
+
+###################################################
+### FUNCTION TO load TASKBOARD
+###################################################
+@login_required
+def go_to_taskboard(request, boardId):
+    return render(request, "taskboard/taskboard.html", {
+        "boardId": boardId
+    })
