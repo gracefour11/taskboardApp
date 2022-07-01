@@ -81,11 +81,17 @@ def welcome(request):
 ###################################################
 def index(request):
     if request.user.is_authenticated:
-        # all_users = load_all_users(request)
         form = CreateEditProjectForm()
+        tb_dict = retrieveTaskboardsForIndex(request)
+        allTBsOwnedByMeAndOthers = tb_dict['allTBsOwnedByMeAndOthers']
+        allTBSOwnedByMe = tb_dict['allTBSOwnedByMe']
+        allTBSOwnedByOthers = tb_dict['allTBSOwnedByOthers']
+
         return render(request, "taskboard/index.html", {
-            # 'all_users': all_users,
-            'form': form
+            'form': form,
+            'allTBsOwnedByMeAndOthers': allTBsOwnedByMeAndOthers,
+            'allTBSOwnedByMe': allTBSOwnedByMe,
+            'allTBSOwnedByOthers': allTBSOwnedByOthers
         })
     return HttpResponseRedirect(reverse("welcome"))
 
@@ -104,24 +110,20 @@ def load_all_users(request):
         })
 
 ###################################################
-### VIEW ALL MY TASKBOARDS PAGE
+### Function to retrieve all taskboards
 ###################################################
-def taskboards_view(request):
+def retrieveTaskboardsForIndex(request):
     user = User.objects.get(id=request.session['_auth_user_id'])
-    # retrieve the taskboard ids from USer2Taskboard
-    individualTBs = Taskboard.objects.filter(type=TASKBOARD_TYPE_IND, user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_OWNER)
-    groupTBsOwnedByMe = Taskboard.objects.filter(type=TASKBOARD_TYPE_GRP, user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_OWNER)
-    groupTBsOwnedByOthers = Taskboard.objects.filter(type=TASKBOARD_TYPE_GRP, user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_MEMBER)
+    # retrieve the taskboard ids from User2Taskboard
+    allTBsOwnedByMeAndOthers = Taskboard.objects.filter(user2taskboard__user=user)
+    allTBSOwnedByMe = Taskboard.objects.filter(user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_OWNER)
+    allTBSOwnedByOthers = Taskboard.objects.filter(user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_MEMBER)
 
-    print(individualTBs)
-    print(groupTBsOwnedByMe)
-    print(groupTBsOwnedByOthers)
-    # retrieve the taskboards by filtering the list of ids retrieved from USer2Taskboard
-    return render(request, "taskboard/myTaskboards.html", {
-        'individualTBs': individualTBs,
-        'groupTBsOwnedByMe': groupTBsOwnedByMe,
-        'groupTBsOwnedByOthers': groupTBsOwnedByOthers
-    })
+    return {
+        'allTBsOwnedByMeAndOthers': allTBsOwnedByMeAndOthers,
+        'allTBSOwnedByMe': allTBSOwnedByMe,
+        'allTBSOwnedByOthers': allTBSOwnedByOthers
+    }
 
 ###################################################
 ### FUNCTION TO CREATE TASKBOARD

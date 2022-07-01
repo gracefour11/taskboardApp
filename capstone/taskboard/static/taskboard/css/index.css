@@ -1,25 +1,96 @@
-.container-fluid {
-    display:inline-flex;
-    height: 80vh;
-    padding: 8%;
+body {
+    background-color:white;
+    background-image:none
 }
 
-.btn.vertical {
+.navbar {
+  background-image: url("welcomePageBg.jpg");
+  background-color: white;
+}
+
+.container {
+    /* display:inline-flex; */
+    height: 90vh;
+    padding: 2%;
+}
+
+.nav-tabs{
+    width:100%;
+    display:inline-flex
+  }
+  
+  .nav-tabs .nav-link {
+    border-top: 1px solid whitesmoke;
+    border-top-left-radius: 10px 10px;
+    border-top-right-radius: 10px 10px;
+    border-left: 1px solid whitesmoke;
+    border-right: 1px solid whitesmoke;
+    border-bottom: 2px solid whitesmoke;
+  }
+/* 
+  .nav-tabs .nav-item .nav-link:hover {
+    transform: scaleY(1.1);
+  } */
+
+  .nav-tabs .nav-item .nav-link.active {
+    border-color: whitesmoke;
+    border-bottom: 2px solid rgb(1, 79, 122);
+    color: whitesmoke;
+    background-color: rgb(1, 79, 122);
+  }
+
+  .tab-content {
+    color: white;
+    border-color: whitesmoke;
+    border-style: solid;
+    border-width: 2px;
+    border-bottom-left-radius: 10px 10px;
+    border-bottom-right-radius: 10px 10px;
+  }
+
+/* .btn.vertical {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+} */
 
-#create-taskboard-btn, #go-to-my-taskboards-btn {
+/* #create-taskboard-btn, #go-to-my-taskboards-btn {
     background-color: rgba(0, 0, 0, 0.658);
     color: white;
     margin: 4%;
     padding: 1%;
     width:20%;
-}
+} */
 
 .btn:hover {
     transform: scale(1.1);
+}
+
+.card-chip {
+  display: inline-block;
+  /* width:80%; */
+}
+
+.card-chip-img {
+  float: left;
+  width: 30%;
+  height: auto;
+}
+
+.card-chip .card-body .card-title {
+  text-align: center;
+  /* line-height: 50px; */
+}
+
+.card-chip .card-chip-text {
+  text-align: right;
+  overflow-wrap:break-word;
+}
+
+.icon-dropdown {
+  position: absolute;
+  top: 0;
+  right: 3%;
 }
 
 /* The Modal (background) */

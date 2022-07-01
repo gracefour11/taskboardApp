@@ -9,7 +9,6 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
 
-    path("taskboards", views.taskboards_view, name="my_taskboards"),
     path("taskboard/create", views.create_taskboard, name="create_taskboard"),
     path("taskboards/load_users", views.load_all_users, name="load_all_users"),
     path("taskboard/<int:boardId>", views.go_to_taskboard, name="go_to_taskboard")

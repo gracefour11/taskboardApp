@@ -9,22 +9,86 @@
 {% endblock %}
 {% block main %}
 
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-12 col-md-offset-2">
+            <a class="btn btn-primary" id="create-taskboard-btn" type="button" onclick="createTaskboard();" href="#" role="button">
+                <i class="fas fa-plus-circle me-2"></i>
+                Create New Taskboard
+            </a>    <br><br>
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+                <li class="nav-item text-center" id="nav-item-tbOwnedByMeAndOthers">
+                    <a class="nav-link active" href="#tbOwnedByMeAndOthers-contents" id="tbOwnedByMeAndOthers-tab" data-bs-toggle="tab" style="font-size: medium;">All</a>
+                </li>
+                <li class="nav-item text-center" id="nav-item-tbOwnedByMe">
+                    <a class="nav-link"  href="#tbOwnedByMe-contents" id="tbOwnedByMe-tab" data-bs-toggle="tab" style="font-size: medium;">Owned By Me</a>
+                </li>
+                <li class="nav-item text-center" id="nav-item-tbOwnedByOthers">
+                    <a class="nav-link"  href="#tbOwnedByOthers-contents" id="tbOwnedByOthers-tab" data-bs-toggle="tab" style="font-size: medium;">Owned By Others</a>
+                </li>
+            </ul>
+            <div class="tab-content" style="padding: 2%;">
+                <div id="tbOwnedByMeAndOthers-contents" class="tab-pane active" >
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        {% for taskboard in allTBsOwnedByMeAndOthers %}
+                        <div class="col">
+                            <div class="card h-100" style="margin:5px;">
+                                <div class="card-chip">
+                                    <div class="dropdown">
+                                        <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-all" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-all">
+                                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/>
+                                        <h3 class="card-title align-middle"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h3>
+                                            <!-- <p class="card-chip-text text-muted">Last Updated: {{taskboard.last_modified_dt}}</p> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="tbOwnedByMe-contents" class="tab-pane fade">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        {% for taskboard in allTBSOwnedByMe %}
+                        <div>
+                          <div class="card mb-3 h-100" style="margin:10px;">
+                            <div class="card-body">
+                                <h3 class="card-title"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h3>
+                                <small class="text-muted">Last Updated: {{taskboard.last_modified_dt}}</small>
+                            </div>
+                          </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="tbOwnedByOthers-contents" class="tab-pane fade">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        {% for taskboard in allTBSOwnedByOthers %}
+                        <div>
+                          <div class="card mb-3 h-100" style="margin:10px;">
+                            <div class="card-body">
+                                <h3 class="card-title"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h3>
+                                <small class="text-muted">Last Updated: {{taskboard.last_modified_dt}}</small>
+                            </div>
+                          </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
 
 
-
-<div class="container-fluid justify-content-md-center">
-    <button class="btn vertical" id="create-taskboard-btn" type="button" onclick="createTaskboard();">
-        <i class="bi bi-plus-square fa-5x"></i>
-        <br><br>
-        <span><h2>Create New <br>Taskboard</h2></span>
-        <br><br>
-    </button>
-    <button class="btn vertical" id="go-to-my-taskboards-btn" type="button" onclick="location.href=`{% url 'my_taskboards' %}`">
-        <i class="bi bi-grid-3x3-gap fa-5x"></i>
-        <br><br>
-        <span><h2>Go to My <br>Taskboards</h2></span>
-        <br><br>
-    </button>
     <!-- taskboard MODAL start -->
     <div class="modal" tabindex="-1" role="dialog" id="taskboardModal">
         {% if user.is_authenticated %}
