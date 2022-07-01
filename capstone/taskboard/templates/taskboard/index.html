@@ -43,10 +43,9 @@
                                             <li><a class="dropdown-item" href="#">Delete</a></li>
                                         </ul>
                                     </div>
-                                    <div class="card-body">
-                                        <img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/>
-                                        <h3 class="card-title align-middle"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h3>
-                                            <!-- <p class="card-chip-text text-muted">Last Updated: {{taskboard.last_modified_dt}}</p> -->
+                                    <div class="card-body" style="display:inline;">
+                                        <div><img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/></div>
+                                        <div><h3 class="card-chip-text align-middle"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h3></div>
                                     </div>
                                 </div>
                             </div>

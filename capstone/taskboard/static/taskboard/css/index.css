@@ -72,20 +72,20 @@ body {
 }
 
 .card-chip-img {
-  float: left;
-  width: 30%;
-  height: auto;
+  float:left;
+  width: 26%;
+  position: absolute;
+  left: 2%;
+  top: 50%;
+  /* left: 50%; */
+  transform: translateY(-50%);
 }
 
-.card-chip .card-body .card-title {
+.card-chip-text {
   text-align: center;
   /* line-height: 50px; */
 }
 
-.card-chip .card-chip-text {
-  text-align: right;
-  overflow-wrap:break-word;
-}
 
 .icon-dropdown {
   position: absolute;
