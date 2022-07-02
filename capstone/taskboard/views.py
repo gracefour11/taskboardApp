@@ -12,6 +12,7 @@ import json
 from .models import *
 from .forms import *
 from .constants import *
+from .helper import *
 
 ###################################################
 ### LOGIN CURRENT USER
@@ -141,13 +142,7 @@ def create_taskboard(request):
             members = form.cleaned_data["taskboard_members"]
             
             # for logging purposes
-            print("Created Taskboard: " + name)
-            print("New taskboard type: "+ type)
-            if (deadline is not None):
-                print("New taskboard deadline: " + deadline.strftime('%Y-%m-%d'))
-            else:
-                print("New taskboard deadline: ")
-            print("New taskboard members list: " + members)
+            printLogForTaskboard(name, type, deadline, members)
 
             if (len(name) > 0 and len(type) > 0):
                 # insert taskboard into db
@@ -157,9 +152,7 @@ def create_taskboard(request):
 
                 # linking owner to taskboard
                 owner = User.objects.get(id=request.session['_auth_user_id'])
-                user2Taskboard_forOwner = User2Taskboard(user=owner, taskboard=taskboard, user_role=USER_ROLE_OWNER)
-                user2Taskboard_forOwner.save()
-                print("Successfully Inserted User2Taskboard (for owner) into DB: " + user2Taskboard_forOwner.getDict())
+                addUserToTaskboard(owner, taskboard, USER_ROLE_OWNER)
 
                 # linking members to taskboard
                 if (len(members) > 0): #members will be a string of "id,id,id,id"
@@ -167,9 +160,7 @@ def create_taskboard(request):
                     members_id_list = members.split(",")
                     for member_id in members_id_list:
                         member = User.objects.get(id=member_id)
-                        user2Taskboard_forMember = User2Taskboard(user=member, taskboard=taskboard, user_role=USER_ROLE_MEMBER)
-                        user2Taskboard_forMember.save()
-                        print("Successfully Inserted User2Taskboard (for member) into DB: " + user2Taskboard_forMember.getDict())
+                        addUserToTaskboard(member, taskboard, USER_ROLE_MEMBER)
 
                 return redirect(reverse('go_to_taskboard', kwargs={ 'boardId': taskboard.id }))
             return render(request, "taskboard/index.html", {
@@ -183,6 +174,115 @@ def create_taskboard(request):
         return render(request, "taskboard/index.html", {
             "form": form
         })
+
+###################################################
+### FUNCTION TO ADD USER TO TASKBOARD
+###################################################
+def addUserToTaskboard(userId, taskboard, user_role):
+    user = User.objects.get(id=userId)
+    user2Taskboard = User2Taskboard(user=user, taskboard=taskboard, user_role=user_role)
+    user2Taskboard.save()
+    print("Successfully Inserted User2Taskboard into DB: " + user2Taskboard.getDict())
+
+
+###################################################
+### FUNCTION TO REMOVE USER TO TASKBOARD
+###################################################
+def removeUserFromTaskboard(userId, taskboard):
+    user = User.objects.get(id=userId)
+    user2Taskboard = User2Taskboard.objects.get(user=user, taskboard=taskboard)
+    user2Taskboard.user_role = USER_ROLE_REMOVED
+    user2Taskboard.save()
+    print("Successfully Removed User2Taskboard: " + user2Taskboard.getDict())
+
+
+###################################################
+### FUNCTION TO UPDATE USER ROLE IN TASKBOARD
+###################################################
+def updateUserRoleInTaskboard(user, taskboard, user_role):
+    user2Taskboard = User2Taskboard.objects.get(user=user, taskboard=taskboard)
+    user2Taskboard.user_role = user_role
+    user2Taskboard.save()
+    print("Successfully Removed User2Taskboard: " + user2Taskboard.getDict())
+
+###################################################
+### FUNCTION TO EDIT TASKBOARD SETTINGS
+### (only owner of taskboard is allowed to edit taskboard settings)
+###################################################
+@login_required
+def edit_taskboard(request, boardId):
+    print("in edit_taskboard")
+    print(request.method)
+    if (request.method == "POST"):
+        form = CreateEditProjectForm(request.POST)
+        taskboard = Taskboard.objects.get(id=boardId)
+        if form.is_valid():
+            name = form.cleaned_data["taskboard_name"]
+            type = form.cleaned_data["taskboard_type"]
+            deadline = form.cleaned_data["taskboard_deadline"]
+            members = form.cleaned_data["taskboard_members"]
+
+            printLogForTaskboard(name, type, deadline, members)
+            
+            taskboard.name = name
+            taskboard.type = type
+            taskboard.deadline = deadline
+            taskboard.save()
+
+            update_taskboard_members(boardId, members)
+
+
+###################################################
+### FUNCTION TO UPDATE TASKBOARD MEMBERS
+###################################################
+@login_required
+def update_taskboard_members(boardId, newMembersAsStr):
+    taskboard = Taskboard.objects.get(id=boardId)
+    
+    # get list of current members' ids
+    currMembers = User.objects.filter(user2taskboard__taskboard=taskboard, user2taskboard__user_role=USER_ROLE_MEMBER).values_list('id', flat=True)
+    currMembers_list = list(currMembers)
+
+    # get list of new members' ids
+    newMembers_list = newMembersAsStr.split(",")
+
+    # find differences between the 2 lists
+    diff_list = getDiffBtnLists(currMembers_list, newMembers_list)
+
+    # if userId in diff_list is in currMembers, remove member
+    # else: userId in diff_list is in newMembers, add member
+    for userId in diff_list:
+        if userId in currMembers_list:
+            removeUserFromTaskboard(userId, taskboard)
+        else:
+            addUserToTaskboard(userId, taskboard)
+
+
+
+
+###################################################
+### FUNCTION TO DELETE TASKBOARD 
+###################################################
+# - Owned by me and Individual: Can delete
+# - Owned by me and Group: Can delete but need to assign new owner
+# - Owned by others: Cannot delete but have option: Leave Taskboard.
+@login_required
+def delete_taskboard(request, boardId):
+    taskboard = Taskboard.objects.get(id=boardId)
+    user = request.user
+    user2Taskboard = User2Taskboard.objects.get(user=user, taskboard=taskboard)
+
+    if (user2Taskboard.user_role == USER_ROLE_OWNER):
+        if (taskboard.type == TASKBOARD_TYPE_IND):
+            pass
+    pass
+
+###################################################
+### FUNCTION TO LEAVE TASKBOARD 
+###################################################
+@login_required
+def leave_taskboard(request, boardId):
+    pass
 
 ###################################################
 ### FUNCTION TO GO TO TASKBOARD PAGE

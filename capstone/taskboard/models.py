@@ -18,7 +18,10 @@ class Taskboard(models.Model):
     deadline = models.DateField(default=None, null=True)
     type = models.CharField(max_length=100, default=None)
     created_dt = models.DateTimeField(auto_now_add=True, auto_now=False)
+    created_by = models.ForeignKey(User,on_delete=models.CASCADE, related_name='Taskboard_created_by')
     last_modified_dt = models.DateTimeField(auto_now_add=False, auto_now=True)
+    last_modified_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name='askboard_last_modified_by')
+    delete_ind = models.CharField(max_length=1, default='F')
 
     def getDict(self):
         dict = self.serialize()
@@ -41,7 +44,10 @@ class User2Taskboard(models.Model):
     taskboard = models.ForeignKey(Taskboard,on_delete=models.CASCADE,related_name="taskboardId", related_query_name="user2taskboard")
     user_role = models.CharField(max_length=10, default=None) #user's role in the taskboard: owner or member
     created_dt = models.DateTimeField(auto_now_add=True, auto_now=False)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name='User2Taskboard_created_by')
     last_modified_dt = models.DateTimeField(auto_now_add=False, auto_now=True)
+    last_modified_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name='User2Taskboard_last_modified_by')
+    delete_ind = models.CharField(max_length=1, default='F')
 
     def serialize(self):
         return {
