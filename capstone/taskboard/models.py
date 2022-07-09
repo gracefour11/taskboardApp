@@ -36,7 +36,11 @@ class Taskboard(models.Model):
         return {
             "id": self.id,
             "title": self.title,
-            "deadline": deadlineInDict
+            "deadline": deadlineInDict,
+            "last_modified_by": self.last_modified_by.username,
+            "last_modified_dt": self.last_modified_dt.strftime('%Y-%m-%d'),
+            "created_by": self.created_by.username,
+            "created_dt": self.created_dt.strftime('%Y-%m-%d')
         }
 
 class User2Taskboard(models.Model):

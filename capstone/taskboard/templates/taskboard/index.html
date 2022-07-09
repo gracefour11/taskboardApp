@@ -43,9 +43,9 @@
                                             <li><a class="dropdown-item" href="#">Delete</a></li>
                                         </ul>
                                     </div>
-                                    <div class="card-body" style="display:inline;">
-                                        <div><img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/></div>
-                                        <div><h3 class="card-chip-text align-middle"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h3></div>
+                                    <div class="card-body row" style="display:inline-table;">
+                                        <td><img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/></td>
+                                        <td><h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4></td>
                                     </div>
                                 </div>
                             </div>
@@ -57,28 +57,52 @@
                 <div id="tbOwnedByMe-contents" class="tab-pane fade">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         {% for taskboard in allTBSOwnedByMe %}
-                        <div>
-                          <div class="card mb-3 h-100" style="margin:10px;">
-                            <div class="card-body">
-                                <h3 class="card-title"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h3>
-                                <small class="text-muted">Last Updated: {{taskboard.last_modified_dt}}</small>
+                        <div class="col">
+                            <div class="card h-100" style="margin:5px;">
+                                <div class="card-chip">
+                                    <div class="dropdown">
+                                        <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-me" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-me">
+                                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body row" style="display:inline-table;">
+                                        <td><img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/></td>
+                                        <td><h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4></td>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
                         </div>
+
                         {% endfor %}
                     </div>
                 </div>
                 <div id="tbOwnedByOthers-contents" class="tab-pane fade">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         {% for taskboard in allTBSOwnedByOthers %}
-                        <div>
-                          <div class="card mb-3 h-100" style="margin:10px;">
-                            <div class="card-body">
-                                <h3 class="card-title"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h3>
-                                <small class="text-muted">Last Updated: {{taskboard.last_modified_dt}}</small>
+                        <div class="col">
+                            <div class="card h-100" style="margin:5px;">
+                                <div class="card-chip">
+                                    <div class="dropdown">
+                                        <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-others" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-others">
+                                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                                            <li><a class="dropdown-item" href="#">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body row" style="display:inline-table;">
+                                        <td><img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/></td>
+                                        <td><h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4></td>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
                         </div>
+
                         {% endfor %}
                     </div>
                 </div>
@@ -139,10 +163,15 @@
                                                     <option value="{{member.username}}" data-value="{{member.id}}" ></option>
                                                 {% endfor %} -->
                                             </datalist>
-                                            <button type="button" class="btn btn-info" onclick="addMember()"> Add </button>
+                                            &nbsp;
+                                            <button type="button" class="btn btn-info" id="add-member-btn" onclick="addMember()"> Add </button>
                                         </div>
                                         <br>
-                                        <div id="showMemberList"></div>
+                                        <div id="no-more-members-to-add" style="display:none;">
+                                            <small class="note note-danger" >There are no more members to add.</small>
+                                            <br><br>
+                                        </div>
+                                        <div id="showMemberList" style="margin:3%;"></div>
                                     </div> 
                                 </span>
                             </div>  

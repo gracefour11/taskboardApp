@@ -72,17 +72,27 @@ body {
 }
 
 .card-chip-img {
-  float:left;
+  width: 26%;
+  height:auto;
+  position: absolute;
+  left: 2%;
+  top: 50%;
+  transform: translateY(-50%);
+  /* float:left;
   width: 26%;
   position: absolute;
   left: 2%;
   top: 50%;
-  /* left: 50%; */
-  transform: translateY(-50%);
+  transform: translateY(-50%); */
+  display: table-cell;
 }
 
 .card-chip-text {
-  text-align: center;
+  position:absolute;
+  left:35%;
+  top:50%;
+  transform: translateY(-50%);
+  display: table-cell;
   /* line-height: 50px; */
 }
 
@@ -91,6 +101,10 @@ body {
   position: absolute;
   top: 0;
   right: 3%;
+}
+
+.icon-dropdown:hover {
+  transform: scale(1.05);
 }
 
 /* The Modal (background) */

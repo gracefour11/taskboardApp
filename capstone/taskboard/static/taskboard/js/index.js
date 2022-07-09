@@ -37,6 +37,28 @@ function createTaskboard() {
     openTaskboardModal();
 }
 
+// Setting up the create taskboard modal
+function editTaskboard(boardId) {
+    var editUrl = `/taskboard/${boardId}/edit`;
+    var getTaskboardUrl = `/taskboard/${boardId}/view`;
+    document.getElementById('taskboard-modal-title').innerHTML = "Edit Taskboard";
+    document.getElementById('taskboard_form').action = editUrl;
+    document.getElementById('submit-taskboard-btn').innerHTML = "Save Changes";
+    fetch(getTaskboardUrl)
+    .then(response => response.json())
+    .then(taskboard => {
+        document.getElementById('taskboard_name').value = taskboard.name
+        document.getElementById('taskboard_deadline').value = taskboard.deadline
+        document.getElementById('taskboard_type').value = taskboard.type
+        document.getElementById('taskboard_members').value = taskboard.members
+    })
+
+    // need to do something to taskboard members
+    // show the current members list
+    // allow for adding of members
+    openTaskboardModal();
+}
+
 // Fetching api to loading users for the datalist dropdown
 function load_all_users(listToExcludeAsStr) {
     var listToExclude = convertStrToListOfNumbers(listToExcludeAsStr);
@@ -65,6 +87,19 @@ function load_all_users(listToExcludeAsStr) {
                 document.getElementById('members').append(member_option);
             }
         }
+
+        // if count(listToExclude) = count(all_users)
+        // disable the dropdown.
+        if (listToExclude && listToExclude.length == all_users.length) {
+            document.getElementById('member_to_be_added').disabled = true;
+            document.getElementById('add-member-btn').disabled = true;
+            document.getElementById('no-more-members-to-add').style.display='block';
+        } else {
+            document.getElementById('member_to_be_added').disabled = false;
+            document.getElementById('add-member-btn').disabled = false;
+            document.getElementById('no-more-members-to-add').style.display='none';
+        }
+
     })
 }
 
@@ -75,12 +110,13 @@ function convertStrToListOfNumbers(str) {
     if (str) {
         arrOfStr = str.split(",");
     }
+    console.log(arrOfStr);
     if (arrOfStr) {
         arrOfNum = [];
-        arrOfStr.forEach(s => {
-            arrOfNum.push(Number(str));
-        });
+        arrOfStr.forEach(s => arrOfNum.push(Number(s)));
     }
+    console.log("arrOfNum: ");
+    console.log(arrOfNum);
     return arrOfNum;
 }
 
@@ -125,6 +161,7 @@ function addMember() {
 
         // reload members list
         let currentMembersListStr = document.getElementById('taskboard_members').value;
+        console.log("taskboard_members: " + currentMembersListStr);
         load_all_users(currentMembersListStr);
     }
 }
