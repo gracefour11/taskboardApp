@@ -13,7 +13,7 @@ class CreateEditTaskboardForm(forms.Form):
     taskboard_members = forms.CharField(label="taskboard_members", max_length=100,required=False)
 
 class DeleteTaskboardForm(forms.Form):
-    new_owner = forms.CharField(label="new_owner_name", max_length=100, required=True)
+    new_owner_name = forms.CharField(label="new_owner_name", max_length=100, required=False)
 
 class CreateEditTaskForm(forms.Form):
     title = forms.CharField(label="title", max_length=100, required=True)

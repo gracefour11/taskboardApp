@@ -84,13 +84,11 @@ def index(request):
     if request.user.is_authenticated:
         form = CreateEditTaskboardForm()
         tb_dict = retrieveTaskboardsForIndex(request)
-        allTBsOwnedByMeAndOthers = tb_dict['allTBsOwnedByMeAndOthers']
         allTBSOwnedByMe = tb_dict['allTBSOwnedByMe']
         allTBSOwnedByOthers = tb_dict['allTBSOwnedByOthers']
 
         return render(request, "taskboard/index.html", {
             'form': form,
-            'allTBsOwnedByMeAndOthers': allTBsOwnedByMeAndOthers,
             'allTBSOwnedByMe': allTBSOwnedByMe,
             'allTBSOwnedByOthers': allTBSOwnedByOthers
         })
@@ -116,15 +114,15 @@ def load_all_users(request):
 def retrieveTaskboardsForIndex(request):
     user = User.objects.get(id=request.session['_auth_user_id'])
     # retrieve the taskboard ids from User2Taskboard
-    allTBsOwnedByMeAndOthers = Taskboard.objects.filter(user2taskboard__user=user)
-    allTBSOwnedByMe = Taskboard.objects.filter(user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_OWNER)
-    allTBSOwnedByOthers = Taskboard.objects.filter(user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_MEMBER)
+    allTBSOwnedByMe = Taskboard.objects.filter(user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_OWNER, delete_ind=DELETE_IND_F, user2taskboard__delete_ind=DELETE_IND_F)
+    allTBSOwnedByOthers = Taskboard.objects.filter(user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_MEMBER, delete_ind=DELETE_IND_F, user2taskboard__delete_ind=DELETE_IND_F)
 
     return {
-        'allTBsOwnedByMeAndOthers': allTBsOwnedByMeAndOthers,
         'allTBSOwnedByMe': allTBSOwnedByMe,
         'allTBSOwnedByOthers': allTBSOwnedByOthers
     }
+
+
 
 ###################################################
 ### FUNCTION TO CREATE TASKBOARD
@@ -187,6 +185,7 @@ def edit_taskboard(request, boardId):
     if (request.method == "POST"):
         form = CreateEditTaskboardForm(request.POST)
         taskboard = Taskboard.objects.get(id=boardId)
+        print(form.errors)
         if form.is_valid():
             name = form.cleaned_data["taskboard_name"]
             type = form.cleaned_data["taskboard_type"]
@@ -195,7 +194,7 @@ def edit_taskboard(request, boardId):
 
             printLogForTaskboard(name, type, deadline, members)
             
-            taskboard.name = name
+            taskboard.title = name
             taskboard.type = type
             taskboard.deadline = deadline
             taskboard.last_modified_by = request.user
@@ -212,14 +211,18 @@ def edit_taskboard(request, boardId):
 @login_required
 def update_taskboard_members(request, boardId, newMembersAsStr):
     taskboard = Taskboard.objects.get(id=boardId)
-
-    currMembers = User.objects.filter(user2taskboard__taskboard=taskboard, user2taskboard__user_role=USER_ROLE_MEMBER).values_list('id', flat=True)
-    currMembers_list = list(currMembers)
-
+    memberList_ids = User2Taskboard.objects.filter(taskboard=taskboard, user_role=USER_ROLE_MEMBER, delete_ind=DELETE_IND_F).values_list('user', flat=True)
+    currMembers = User.objects.filter(id__in=memberList_ids).values_list('id', flat=True)
+    currMembers_list = list(map(str, list(currMembers)))
+    
+    print("====== PRINT CURRENT MEMBERS LIST ===============")
+    print(currMembers_list)
     newMembers_list = newMembersAsStr.split(",")
-
+    print("====== PRINT NEW MEMBERS LIST ===============")
+    print(newMembers_list)
     diff_list = getDiffBtnLists(currMembers_list, newMembers_list)
-
+    print("====== PRINT DIFF  LIST ===============")
+    print(diff_list)
     # if userId in diff_list is in currMembers, remove member
     # else: userId in diff_list is in newMembers, add member
     for userId in diff_list:
@@ -227,18 +230,33 @@ def update_taskboard_members(request, boardId, newMembersAsStr):
         if userId in currMembers_list:
             removeUserFromTaskboard(user, taskboard, request.user)
         else:
-            addUserToTaskboard(user, taskboard, request.user)
+            addUserToTaskboard(user, taskboard, USER_ROLE_MEMBER, request.user)
 
 ###################################################
 ### FUNCTION TO GET TASKBOARD CONTENTS
 ###################################################
 def get_taskboard_contents(request, boardId):
-    try:
-        taskboard = Taskboard.objects.get(id=boardId)
-    except Taskboard.DoesNotExist:
-        return JsonResponse({"error": "Taskboard not found."}, status=404)
     if request.method == "GET":
-        return JsonResponse(taskboard.serialize())
+        try:
+            taskboard = Taskboard.objects.get(id=boardId)
+            if (taskboard.type == TASKBOARD_TYPE_GRP):
+                # insert member list (id and name) into serialised taskboard (if it's group)
+                memberList_ids = User2Taskboard.objects.filter(taskboard=taskboard, user_role=USER_ROLE_MEMBER, delete_ind=DELETE_IND_F).values_list('user', flat=True)
+                memberList_user = User.objects.filter(id__in=memberList_ids)
+                print("===== memberList ======")
+                print(memberList_user)
+                return JsonResponse({
+                    'taskboard': taskboard.serialize(),
+                    'taskboard_members': [user.serialize() for user in memberList_user]
+                })
+            else:
+                return JsonResponse({
+                    'taskboard': taskboard.serialize(),
+                })
+        except Taskboard.DoesNotExist:
+            return JsonResponse({"error": "Taskboard not found."}, status=404)
+
+
     else:
         return JsonResponse({"error": "GET request required."}, status=400)
 

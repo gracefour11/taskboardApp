@@ -24,7 +24,6 @@ function resetForm() {
     document.getElementById('taskboard_members').value = "";
     document.getElementById('showMemberList').innerHTML = "";
     document.getElementById('showAddMembersDiv').style.display = "none";
-    load_all_users(null);
 }
 
 // Setting up the create taskboard modal
@@ -34,11 +33,14 @@ function createTaskboard() {
     document.getElementById('submit-taskboard-btn').innerHTML = "Create";
 
     resetForm();
+    load_all_users(null);
+
     openTaskboardModal();
 }
 
-// Setting up the create taskboard modal
+// Setting up the edit taskboard modal
 function editTaskboard(boardId) {
+    resetForm();
     var editUrl = `/taskboard/${boardId}/edit`;
     var getTaskboardUrl = `/taskboard/${boardId}/view`;
     document.getElementById('taskboard-modal-title').innerHTML = "Edit Taskboard";
@@ -46,24 +48,51 @@ function editTaskboard(boardId) {
     document.getElementById('submit-taskboard-btn').innerHTML = "Save Changes";
     fetch(getTaskboardUrl)
     .then(response => response.json())
-    .then(taskboard => {
-        document.getElementById('taskboard_name').value = taskboard.name
-        document.getElementById('taskboard_deadline').value = taskboard.deadline
-        document.getElementById('taskboard_type').value = taskboard.type
-        document.getElementById('taskboard_members').value = taskboard.members
+    .then(data => {
+        taskboard = data["taskboard"]
+        document.getElementById('taskboard_name').value = taskboard["title"]
+        document.getElementById('taskboard_deadline').value = taskboard["deadline"]
+        console.log(taskboard["type"]);
+        if (taskboard["type"] == "IND") {            
+            document.getElementById('id_taskboard_type_1').disabled = true;
+            document.getElementById('id_taskboard_type_0').checked = "checked";
+        } else if (taskboard["type"] == "GRP") {
+            document.getElementById('id_taskboard_type_0').disabled = true;
+            document.getElementById('id_taskboard_type_1').checked = "checked";
+
+            // 1. showing the existing members in chips
+            taskboard_members = data["taskboard_members"]
+            console.log("=== taskboard_members====");
+            console.log(typeof taskboard_members);
+            let taskboard_members_id_str = "";
+            for (member in taskboard_members) {
+                if (taskboard_members_id_str == "") {
+                    taskboard_members_id_str += taskboard_members[member]["id"]
+                } else {
+                    taskboard_members_id_str += "," + taskboard_members[member]["id"];
+                }
+                console.log("==== member ====");
+                console.log(member);
+                addChipForMember(taskboard_members[member]["id"], taskboard_members[member]["username"]);
+            }
+            document.getElementById('taskboard_members').value = taskboard_members_id_str
+            // 2. showing the add member view (dropdown)
+            document.getElementById('showAddMembersDiv').style.display = "block";
+            console.log("================== taskboard_members_id_str ========================");
+            console.log(taskboard_members_id_str)
+            load_all_users(taskboard_members_id_str)
+        }
     })
 
-    // need to do something to taskboard members
-    // show the current members list
-    // allow for adding of members
     openTaskboardModal();
 }
 
 // Fetching api to loading users for the datalist dropdown
 function load_all_users(listToExcludeAsStr) {
     var listToExclude = convertStrToListOfNumbers(listToExcludeAsStr);
-    console.log("listToExclude:");
+    console.log("==========listToExclude:==============");
     console.log(listToExclude); 
+    console.log("==========members innerHTML length:==============");
     console.log(document.getElementById('members').innerHTML.length)
     if (document.getElementById('members').innerHTML.length > 0) {
         document.getElementById('members').innerHTML = "";
@@ -72,15 +101,14 @@ function load_all_users(listToExcludeAsStr) {
     .then(response => response.json())
     .then(data => {
         all_users = data["all_users"]
+        console.log("================== all_users ========================");
         console.log(all_users)
 
         for (index in all_users) {
             user = all_users[index];
             if (listToExclude && listToExclude.includes(user["id"])) {
-                console.log("continue")
                 continue;
             } else {
-                console.log("include")
                 const member_option = document.createElement('option');
                 member_option.value = user["username"];
                 member_option.dataset.value = user["id"];
@@ -98,6 +126,12 @@ function load_all_users(listToExcludeAsStr) {
             document.getElementById('member_to_be_added').disabled = false;
             document.getElementById('add-member-btn').disabled = false;
             document.getElementById('no-more-members-to-add').style.display='none';
+        }
+
+        if (!listToExclude) {
+            document.getElementById('need-members-to-add').style.display='block';
+        } else {
+            document.getElementById('need-members-to-add').style.display='none';
         }
 
     })
@@ -132,13 +166,25 @@ function showAddMembersView() {
     }
 }
 
+// Adding chip for member
+function addChipForMember(id, username) {
+    var x = document.createElement("div");
+    x.innerHTML = `
+        <div class="chip" id="member-${id}">
+            ${username}
+            <span class="closebtn" onclick="removeMember('${id}');">&times;</span>
+        </div>
+    `;
+    // displaying newly added member
+    document.getElementById('showMemberList').append(x);    
+}
+
 // Adding member to form[taskboard_members]
 function addMember() {
     var shownVal = document.getElementById('member_to_be_added').value;
     var member_to_be_added = document.querySelector("#members option[value='"+shownVal+"']").dataset.value;
 
     if (member_to_be_added != "") {
-        // console.log(member_to_be_added);
         var addedMemberListInForm = document.getElementById('taskboard_members').value;
         if (addedMemberListInForm == "") {
             addedMemberListInForm = member_to_be_added
@@ -146,15 +192,7 @@ function addMember() {
             addedMemberListInForm += "," + member_to_be_added;
         }
         document.getElementById('taskboard_members').value = addedMemberListInForm;
-        var x = document.createElement("div");
-        x.innerHTML = `
-            <div class="chip" id='member-${member_to_be_added}'>
-                ${shownVal}
-                <span class="closebtn" onclick="removeMember('${member_to_be_added}');">&times;</span>
-            </div>
-        `;
-        // displaying newly added member
-        document.getElementById('showMemberList').append(x);
+        addChipForMember(member_to_be_added, shownVal);
 
         // resetting member_to_be_added field
         document.getElementById('member_to_be_added').value = "";
@@ -188,4 +226,32 @@ function removeMember(id) {
     console.log(document.getElementById('taskboard_members').value);
     // load users for dropdown again
     load_all_users(newList.toString());
+}
+
+function openDeleteTaskboardModal(boardId, isOwner, boardType) {
+    console.log("openDeleteTaskboardModal........... start");
+    var deleteModal = document.getElementById('deleteTaskboardModal');
+    deleteModal.style.display = "inline-block"; 
+
+    document.getElementById('delete-taskboard-modal-title').innerHTML = "Delete Taskboard";
+    document.getElementById('delete_taskboard_form').action = `/taskboard/${boardId}/delete`;
+
+    if (isOwner === 'T' && boardType == 'IND') {
+        document.getElementById('delete-taskboard-msg').innerHTML = 'Are you sure you want to delete this taskboard?';
+        document.getElementById('assign-new-owner-form-group').style.display = "none";
+    } else if (isOwner === 'T' && boardType == 'GRP') {
+        document.getElementById('delete-taskboard-msg').innerHTML = 'Before you leave the taskboard, please assign a new owner.';
+        document.getElementById('assign-new-owner-form-group').style.display = "inline-block";
+    } else {
+        document.getElementById('delete-taskboard-msg').innerHTML = 'Are you sure you want to leave this taskboard?';
+        document.getElementById('assign-new-owner-form-group').style.display = "none";
+    }
+}
+
+
+// close the taskboard modal
+function closeDeleteTaskboardModal() {
+    console.log("closeDeleteTaskboardModal........... start");
+    var deleteModal = document.getElementById('deleteTaskboardModal');
+    deleteModal.style.display="none";
 }

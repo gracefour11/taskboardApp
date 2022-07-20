@@ -37,6 +37,7 @@ class Taskboard(models.Model):
             "id": self.id,
             "title": self.title,
             "deadline": deadlineInDict,
+            "type": self.type,
             "last_modified_by": self.last_modified_by.username,
             "last_modified_dt": self.last_modified_dt.strftime('%Y-%m-%d'),
             "created_by": self.created_by.username,
