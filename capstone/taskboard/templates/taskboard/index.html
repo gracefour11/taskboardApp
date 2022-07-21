@@ -199,13 +199,21 @@
                         <div class="modal-body">
                             <h5 id="delete-taskboard-msg"></h5> 
                             <br>
-                            <div class="form-group row" id="assign-new-owner-form-group">
-                                <label for="taskboard_name" class="col-sm-2 col-form-label">Assign to New Owner:</label>	&nbsp;
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" placeholder="Assign New Owner" name="new_owner_name" id="taskboard_name" value="">
+                            <div id="assign-new-owner-form-group">
+                            <div class="form-group row" >
+                                <label for="new_owner_name" class="col-sm-4 col-form-label">Assign to New Owner:</label>	&nbsp;
+                                <div class="col-sm-6">
+                                    <select class="form-select" aria-label="Default select example" id="new_owner_name" name="new_owner_name">
+                                        <!-- <option selected>Open this select menu</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option> -->
+                                    </select>
+                                    <!-- <input type="hidden" class="form-control" placeholder="Assign New Owner" name="new_owner_name" value=""> -->
                                     <!-- TODO: Change this to a dropdown list of taskboard members. This will need to fetch the current taskboard members using an api -->
                                 </div> 
                             </div> 
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteTaskboardModal();">Cancel</button>

@@ -241,7 +241,21 @@ function openDeleteTaskboardModal(boardId, isOwner, boardType) {
         document.getElementById('assign-new-owner-form-group').style.display = "none";
     } else if (isOwner === 'T' && boardType == 'GRP') {
         document.getElementById('delete-taskboard-msg').innerHTML = 'Before you leave the taskboard, please assign a new owner.';
-        document.getElementById('assign-new-owner-form-group').style.display = "inline-block";
+        document.getElementById('assign-new-owner-form-group').style.display = "block";
+        var getTaskboardUrl = `/taskboard/${boardId}/view`;
+        fetch(getTaskboardUrl)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('new_owner_name').innerHTML = "";
+            // 1. showing the existing members in chips
+            taskboard_members = data["taskboard_members"]
+            for (member in taskboard_members) {
+                const member_option = document.createElement('option');
+                member_option.value = taskboard_members[member]["username"];
+                member_option.innerHTML = taskboard_members[member]["username"];
+                document.getElementById('new_owner_name').append(member_option);
+            }
+        })
     } else {
         document.getElementById('delete-taskboard-msg').innerHTML = 'Are you sure you want to leave this taskboard?';
         document.getElementById('assign-new-owner-form-group').style.display = "none";

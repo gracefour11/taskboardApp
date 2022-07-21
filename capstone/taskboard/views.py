@@ -268,28 +268,32 @@ def delete_taskboard(request, boardId):
     taskboard = Taskboard.objects.get(id=boardId)
     user = request.user
     user2Taskboard = User2Taskboard.objects.get(user=user, taskboard=taskboard)
-    newOwner_name = "test owner name" # new owner name should be taken from delete taskboard form
-    if (user2Taskboard.user_role == USER_ROLE_OWNER):
-        # Case 1: Owned by me and Individual: Can delete
-        if (taskboard.type == TASKBOARD_TYPE_IND):
-            logical_delete_taskboard(taskboard, user)
-            logical_delete_user2taskboard(taskboard, user)
-        else:
-            # Case 2a: Owned by Me and Group: Leave Taskboard and assign new owner
-            if newOwner_name is not None: # delete taskboard and all associated user2taskboards
-                newOwner = User.objects.get(username=newOwner_name)
-                updateUserRoleInTaskboard(newOwner, taskboard, USER_ROLE_OWNER, user)
-                removeUserFromTaskboard(user, taskboard, user)
+    if (request.method == "POST"):
+        form = DeleteTaskboardForm(request.POST)
+        print(form.errors)
+        if form.is_valid():
+            newOwner_name = form.cleaned_data["new_owner_name"]
+            if (user2Taskboard.user_role == USER_ROLE_OWNER):
+                # Case 1: Owned by me and Individual: Can delete
+                if (taskboard.type == TASKBOARD_TYPE_IND):
+                    logical_delete_taskboard(taskboard, user)
+                    logical_delete_user2taskboard(taskboard, user)
+                else:
+                    # Case 2a: Owned by Me and Group: Leave Taskboard and assign new owner
+                    if newOwner_name is not None: # delete taskboard and all associated user2taskboards
+                        newOwner = User.objects.get(username=newOwner_name)
+                        updateUserRoleInTaskboard(newOwner, taskboard, USER_ROLE_OWNER, user)
+                        removeUserFromTaskboard(user, taskboard, user)
 
-            # Case 2b: Owned by Me and Group: Delete taskboard for all users
-            else: # assign new owner (don't delete taskboard)
-                logical_delete_taskboard(taskboard, user)
-                logical_delete_user2taskboards_under_taskboard(taskboard, user)
-    
-    # Case 3: Owned by others: Leave taskboard
-    else:
-        removeUserFromTaskboard(user, taskboard, user)
-    
+                    # Case 2b: Owned by Me and Group: Delete taskboard for all users
+                    else: # assign new owner (don't delete taskboard)
+                        logical_delete_taskboard(taskboard, user)
+                        logical_delete_user2taskboards_under_taskboard(taskboard, user)
+            
+            # Case 3: Owned by others: Leave taskboard
+            else:
+                removeUserFromTaskboard(user, taskboard, user)
+            
     # go back to main page
     return HttpResponseRedirect(reverse("index"))
 
