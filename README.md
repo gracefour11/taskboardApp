@@ -1,9 +1,7 @@
 # CS50W Capstone: Taskboard
-</br>
 This is a Taskboard app inspired by Google TasksBoard. Users can create their own taskboards and share them with other members of the app. They can create, manage and assign tasks on a full-screen Kanban board.
 
 ## Distinctiveness and Complexity
-</br>
 I consider that this project meets all the expectations raised in the assignment of the CS50W final project, as it is a web platform that implements most of the concepts and techniques taught in the course.
 
 The project was built using Django as a backend framework and JavaScript as a frontend programming language. All generated information are saved in database (SQLite by default).
@@ -13,7 +11,6 @@ All webpages of the project are mobile-responsive. I have included the Material 
 The difference between this web app and previous projects is that this application makes use and manages the data to create/read/update/delete taskboards and tasks instantly. Taskboards can be modified without reloading the page.
 
 ## Installation
-</br>
   - Install project dependencies by running `pip install -r requirements.txt`. 
   - Make and apply migrations by running `python manage.py makemigrations` and `python manage.py migrate`.
   - Create superuser with `python manage.py createsuperuser`. This step is optional.
@@ -21,7 +18,6 @@ The difference between this web app and previous projects is that this applicati
   - Go to website address and register an account.
 
 ## Structure
-</br>
   - `taskboard` - main application directory.
     - `static/taskboard` contains all static content.
         - `css` contains all the CSS files.
