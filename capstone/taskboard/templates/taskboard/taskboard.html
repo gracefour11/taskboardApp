@@ -1,10 +1,234 @@
 {% extends "taskboard/layout.html" %}
 {% load static %}
 {% block title %}
-  Taskboard
+  {{taskboard.title}}
 {% endblock %}
 {% block import_scripts %}
-
+    <link href="{% static 'taskboard/css/taskboard.css' %}" rel="stylesheet">
+    <script type ="text/javascript" src="{% static 'taskboard/js/taskboard.js' %}"></script>
+    <script type ="text/javascript" src="{% static 'taskboard/js/index.js' %}"></script>
 {% endblock %}
 {% block main %}
+<div id="taskboard-top-menu">
+  <h2 style="display:inline-block; margin:0;">{{taskboard.title}}</h2>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <div class="dropdown">
+    <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-me" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fas fa-cog fa-2x icon-dropdown" data-mdb-toggle="tooltip" title="Taskboard Settings"></i>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-me">
+        {% if isOwner %}
+          <li><a class="dropdown-item" href="#" onclick="editTaskboard(`{{taskboard.id}}`)">Edit</a></li>
+          <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `T`, `{{taskboard.type}}`)">Leave</a></li>
+        {% else %} 
+          <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, 'F', `{{taskboard.type}}`)">Leave</a></li>
+        {% endif %}
+    </ul>
+  </div>
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a class="btn btn-primary" id="create-section-btn" type="button" onclick="createSection(`{{taskboard.id}}`)" href="#" role="button">
+    <i class="fas fa-plus-circle me-2"></i>
+    Add New Section
+  </a> 
+</div>
+
+<div class="container-fluid">
+  <div class="scroll">
+    {% for section in sections %}
+      <div class="section_col col-md-2" >
+        <div class="section-top">
+          <h3 >{{section.name}}</h3>
+          <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+          <div class="dropdown section-dropdown">
+            <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink_{{section.id}}" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-ellipsis-v fa-lg icon-dropdown" ></i>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink_{{section.id}}">
+              <li><a class="dropdown-item" href="#" onclick="editSection(`{{taskboard.id}}`,`{{section.id}}`,`{{section.name}}`)">Rename</a></li>
+              <li><a class="dropdown-item" href="#" onclick="openDeleteSectionModal(`{{taskboard.id}}`,`{{section.id}}`)">Delete</a></li>
+            </ul>
+          </div>
+        </div>
+
+        
+        <div class="card">
+          <div class="card-body">
+            test
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            test
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            test
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            test
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="sectionModal">
+  {% if user.is_authenticated %}
+      <div class="modal-dialog" style="max-width:65%; vertical-align: middle;" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title" id="section-modal-title" ></h4>
+                  <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeSectionModal();"><span aria-hidden="true"></span></button>
+              </div>
+              <form id="section_form" method="post">
+                  {% csrf_token %}
+                  <div class="modal-body">
+                      <div class="form-group row">
+                          <label for="section_name" class="col-sm-2 col-form-label">Title:</label>	&nbsp;
+                          <div class="col-sm-9">
+                              <input type="text" class="form-control" placeholder="Enter Title" name="section_name" id="section_name" value="">
+                          </div> 
+                      </div> <br>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeSectionModal();">Cancel</button>
+                      <button type="submit" class="btn btn-primary" id="submit-section-btn">
+                  </div>
+              </form>
+          </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+  {% endif %}
+</div><!-- /.modal -->
+<!-- section MODAL end -->
+
+<div class="modal" tabindex="-1" role="dialog" id="deleteSectionModal">
+  {% if user.is_authenticated %}
+      <div class="modal-dialog" style="max-width:65%; vertical-align: middle;" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title" id="delete-section-modal-title">Are you sure to delete this section?</h4>
+                  <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeDeleteSectionModal();"><span aria-hidden="true"></span></button>
+              </div>
+              <form id="delete_section_form" method="post">
+              {% csrf_token %}
+              <div class="modal-body">
+                <h5 id="delete-section-msg">All tasks in this section will also be deleted. This action cannot be reverted.</h5> 
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteSectionModal();">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="delete-section-btn">Delete</button>
+              </div>
+            </form>
+          </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+  {% endif %}
+</div><!-- /.modal -->
+<!-- delete section MODAL end -->
+
+
+<!-- taskboard MODAL start -->
+<div class="modal" tabindex="-1" role="dialog" id="taskboardModal">
+{% if user.is_authenticated %}
+    <div class="modal-dialog" style="max-width:65%; vertical-align: middle;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="taskboard-modal-title" >Edit Taskboard</h4>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTaskboardModal();"><span aria-hidden="true"></span></button>
+            </div>
+            <form id="taskboard_form" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="taskboard_name" class="col-sm-2 col-form-label">Title:</label>	&nbsp;
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" placeholder="Enter Title" name="taskboard_name" id="taskboard_name" value="">
+                        </div> 
+                    </div> <br>
+
+                    <div class="form-group row">
+                        <label for="taskboard_type" class="col-sm-2 col-form-label">Type:</label>	&nbsp;
+                        <div class="col-sm-9">
+                            {% for radio in taskboardForm.taskboard_type %}
+                                <label for="{{ radio.id_for_label }}">
+                                    {{ radio.choice_label }}
+                                    <span class="radio">{{ radio.tag }}</span>
+                                </label>
+                                &nbsp;                        
+                            {% endfor %}
+                        </div> 
+                      </div> 
+                      <div class="form-group row" style="display:none;">
+                          <label for="taskboard_members" class="col-sm-2 col-form-label"></label>	&nbsp;
+                          <input type="text" class="form-control" id="taskboard_members" name="taskboard_members" value="" />
+                      </div>
+                      <div id="showAddMembersDiv" style="display:none;">
+                          <span  class="form-group row">
+                              <label for="members" class="col-sm-2 col-form-label">Members:</label>	&nbsp;
+                              <div class="col-sm-9">
+                                  <div style="display: inline-flex;">
+                                      <input type="text" list="members" id="member_to_be_added"/>
+                                      <datalist id="members">
+                                      </datalist>
+                                      &nbsp;
+                                      <button type="button" class="btn btn-info" id="add-member-btn" onclick="addMember()"> Add </button>
+                                  </div>
+                                  <small id="no-more-members-to-add" style="display:none; margin-top:1%; margin-bottom:1%;" class="note note-danger" >There are no more members to add.</small>
+                                  <small id="need-members-to-add" style="display:none; margin-top:1%; margin-bottom:1%;" class="note note-info" >Please add a member.</small>
+                                  <div id="showMemberList" style="margin:3%;"></div>
+                              </div> 
+                          </span>
+                      </div>  
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeTaskboardModal();">Cancel</button>
+                      <button type="submit" class="btn btn-primary" id="submit-taskboard-btn">
+                  </div>
+              </form>
+          </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+  {% endif %}
+</div><!-- /.modal -->
+<!-- taskboard MODAL end -->
+
+<!-- delete MODAL start -->
+<div class="modal" tabindex="-1" role="dialog" id="deleteTaskboardModal">
+    {% if user.is_authenticated %}
+        <div class="modal-dialog" style="max-width:60%; vertical-align: middle;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="delete-taskboard-modal-title" ></h4>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeDeleteTaskboardModal();"><span aria-hidden="true"></span></button>
+                </div>
+                <form id="delete_taskboard_form" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <h5 id="delete-taskboard-msg"></h5> 
+                        <br>
+                        <div id="assign-new-owner-form-group">
+                        <div class="form-group row" >
+                            <label for="new_owner_name" class="col-sm-4 col-form-label">Assign to New Owner:</label>	&nbsp;
+                            <div class="col-sm-6">
+                                <select class="form-select" aria-label="Default select example" id="new_owner_name" name="new_owner_name">
+                                </select>
+                            </div> 
+                        </div> 
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteTaskboardModal();">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="delete-taskboard-btn"> Leave </button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    {% endif %}
+</div><!-- /.modal -->
+<!-- delete MODAL end -->
+
+
 {% endblock %}

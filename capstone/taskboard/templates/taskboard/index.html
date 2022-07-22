@@ -17,9 +17,6 @@
                 Create New Taskboard
             </a>    <br><br>
             <ul class="nav nav-tabs nav-justified" role="tablist">
-                <!-- <li class="nav-item text-center" id="nav-item-tbOwnedByMeAndOthers">
-                    <a class="nav-link active" href="#tbOwnedByMeAndOthers-contents" id="tbOwnedByMeAndOthers-tab" data-bs-toggle="tab" style="font-size: medium;">All</a>
-                </li> -->
                 <li class="nav-item text-center" id="nav-item-tbOwnedByMe">
                     <a class="nav-link active"  href="#tbOwnedByMe-contents" id="tbOwnedByMe-tab" data-bs-toggle="tab" style="font-size: medium;">Owned By Me</a>
                 </li>
@@ -28,31 +25,6 @@
                 </li>
             </ul>
             <div class="tab-content" style="padding: 2%;">
-                <!-- <div id="tbOwnedByMeAndOthers-contents" class="tab-pane active" >
-                    <div class="row row-cols-1 row-cols-md-3 g-4">
-                        {% for taskboard in allTBsOwnedByMeAndOthers %}
-                        <div class="col">
-                            <div class="card h-100" style="margin:5px;">
-                                <div class="card-chip">
-                                    <div class="dropdown">
-                                        <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-all" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </a>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-all">
-                                            <li><a class="dropdown-item" href="#" onclick="editTaskboard(`{{taskboard.id}}`)">Edit</a></li>
-                                            <li><a class="dropdown-item" href="#">Delete</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="card-body row" style="display:inline-table;">
-                                        <td><img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/></td>
-                                        <td><h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4></td>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div> -->
                 <div id="tbOwnedByMe-contents" class="tab-pane active">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         {% for taskboard in allTBSOwnedByMe %}
@@ -196,13 +168,7 @@
                                 <label for="new_owner_name" class="col-sm-4 col-form-label">Assign to New Owner:</label>	&nbsp;
                                 <div class="col-sm-6">
                                     <select class="form-select" aria-label="Default select example" id="new_owner_name" name="new_owner_name">
-                                        <!-- <option selected>Open this select menu</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option> -->
                                     </select>
-                                    <!-- <input type="hidden" class="form-control" placeholder="Assign New Owner" name="new_owner_name" value=""> -->
-                                    <!-- TODO: Change this to a dropdown list of taskboard members. This will need to fetch the current taskboard members using an api -->
                                 </div> 
                             </div> 
                             </div>

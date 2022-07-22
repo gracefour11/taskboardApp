@@ -14,5 +14,9 @@ urlpatterns = [
     path("taskboard/<int:boardId>", views.go_to_taskboard, name="go_to_taskboard"),
     path("taskboard/<int:boardId>/edit", views.edit_taskboard, name="edit_taskboard"),
     path("taskboard/<int:boardId>/delete", views.delete_taskboard, name="delete_taskboard"),
-    path("taskboard/<int:boardId>/view", views.get_taskboard_contents, name="view_taskboard")
+    path("taskboard/<int:boardId>/view", views.get_taskboard_contents, name="view_taskboard"),
+
+    path("taskboard/<int:boardId>/section/create", views.create_section, name="create_section"),
+    path("taskboard/<int:boardId>/section/<int:sectionId>/edit", views.edit_section, name="edit_section"),
+    path("taskboard/<int:boardId>/section/<int:sectionId>/delete", views.delete_section, name="delete_section"),
 ]

@@ -20,3 +20,9 @@ class CreateEditTaskForm(forms.Form):
     task_assignee = forms.CharField(label="task_assignee", max_length=100, required=False)
     task_section = forms.CharField(label="task_section", max_length=100, required=True)
     task_description = forms.CharField(label="task_description", max_length=500, required=True)
+
+class CreateEditSectionForm(forms.Form):
+    section_name = forms.CharField(label="section_name", max_length=50, required=True)
+
+class DeleteSectionForm(forms.Form):
+    pass

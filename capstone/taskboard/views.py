@@ -302,9 +302,73 @@ def delete_taskboard(request, boardId):
 ###################################################
 @login_required
 def go_to_taskboard(request, boardId):
+    taskboard = Taskboard.objects.get(id=boardId)
+    sections = Section.objects.filter(taskboard=taskboard, delete_ind=DELETE_IND_F)
+    user2taskboard_owner = User2Taskboard.objects.get(taskboard=taskboard, user_role=USER_ROLE_OWNER, delete_ind=DELETE_IND_F)
+    isOwner = False
+    if request.user.id == user2taskboard_owner.user.id:
+        isOwner = True
+    
+    sectionForm = CreateEditSectionForm()
+    taskboardForm = CreateEditTaskboardForm()
+    print("current request user: " + request.user.username)
+    print("taskboard owner: " + user2taskboard_owner.user.username)
+
     return render(request, "taskboard/taskboard.html", {
-        "boardId": boardId
+        "taskboard": taskboard,
+        "sections": sections,
+        "isOwner": isOwner,
+        "sectionForm": sectionForm,
+        "taskboardForm": taskboardForm
     })
 
 
+###################################################
+### FUNCTION TO CREATE SECTION
+###################################################
+@login_required
+def create_section(request, boardId):
+    if (request.method == "POST"):
+        form = CreateEditSectionForm(request.POST)
+        if form.is_valid():
+            section_name = form.cleaned_data["section_name"]
+            taskboard = Taskboard.objects.get(id=boardId)
+            section = Section(name=section_name, taskboard=taskboard, created_by=request.user, last_modified_by=request.user)
+            section.save()
+            print("Successfully inserted Section into DB: " + section_name + " in taskboard " + taskboard.title)
+    
+    return redirect(reverse('go_to_taskboard', kwargs={ 'boardId': boardId}))
 
+###################################################
+### FUNCTION TO EDIT SECTION
+###################################################
+@login_required
+def edit_section(request, boardId, sectionId):
+    if (request.method == "POST"):
+        form = CreateEditSectionForm(request.POST)
+        if form.is_valid():
+            section = Section.objects.get(id=sectionId)
+            section.name = form.cleaned_data["section_name"] 
+            section.last_modified_by = request.user
+            section.save()
+            print("Successfully updated Section into DB: " + section.name + " in taskboard " + section.taskboard.title)
+    
+    return redirect(reverse('go_to_taskboard', kwargs={ 'boardId': section.taskboard.id}))
+
+###################################################
+### FUNCTION TO DELETE SECTION
+###################################################
+@login_required
+def delete_section(request, boardId, sectionId):
+    section = Section.objects.get(id=sectionId)
+    if (request.method == "POST"):
+        form = DeleteSectionForm(request.POST)
+        print(form.errors)
+        print("deleting section")
+        if form.is_valid():
+            section.delete_ind = DELETE_IND_T
+            section.last_modified_by = request.user
+            section.save()
+            print("Successfully deleted Section from DB: " + section.name + " from taskboard " + section.taskboard.title)
+    
+    return redirect(reverse('go_to_taskboard', kwargs={ 'boardId': section.taskboard.id}))

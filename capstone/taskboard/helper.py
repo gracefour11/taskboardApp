@@ -66,7 +66,7 @@ def removeUserFromTaskboard(user, taskboard, request_user):
 ### FUNCTION TO UPDATE USER ROLE IN TASKBOARD
 ###################################################
 def updateUserRoleInTaskboard(user, taskboard, user_role, request_user):
-    user2Taskboard = User2Taskboard.objects.get(user=user, taskboard=taskboard, delete_ind=DELETE_IND_F)
+    user2Taskboard = User2Taskboard.objects.get(user=user, user_role=USER_ROLE_MEMBER, taskboard=taskboard, delete_ind=DELETE_IND_F)
     user2Taskboard.user_role = user_role
     user2Taskboard.last_modified_by = request_user
     user2Taskboard.save()

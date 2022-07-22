@@ -40,3 +40,6 @@ The difference between this web app and previous projects is that this applicati
     - `urls.py` - all application URLs.
     - `views.py` respectively, contains all application views.
   - `capstone` - project directory.
+
+## Future Enhancements
+  - Use WebSockets to introduce real-time updates for Group Taskboards
