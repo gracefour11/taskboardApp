@@ -113,7 +113,7 @@
     <!-- taskboard MODAL start -->
     <div class="modal" tabindex="-1" role="dialog" id="taskboardModal">
         {% if user.is_authenticated %}
-            <div class="modal-dialog" style="max-width:60%; vertical-align: middle;" role="document">
+            <div class="modal-dialog" style="max-width:65%; vertical-align: middle;" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="taskboard-modal-title" ></h4>
@@ -128,12 +128,7 @@
                                     <input type="text" class="form-control" placeholder="Enter Title" name="taskboard_name" id="taskboard_name" value="">
                                 </div> 
                             </div> <br>
-                            <div class="form-group row">
-                                <label for="taskboard_deadline" class="col-sm-2 col-form-label">Deadline:</label>	&nbsp;
-                                <div class="col-sm-9">
-                                    <input type="date" class="form-control" placeholder="Enter Deadline" name="taskboard_deadline" id="taskboard_deadline">
-                                </div> 
-                            </div> <br>
+
                             <div class="form-group row">
                                 <label for="taskboard_type" class="col-sm-2 col-form-label">Type:</label>	&nbsp;
                                 <div class="col-sm-9">
@@ -163,12 +158,9 @@
                                             </datalist>
                                             &nbsp;
                                             <button type="button" class="btn btn-info" id="add-member-btn" onclick="addMember()"> Add </button>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <small id="no-more-members-to-add" style="display:none;" class="note note-danger" >There are no more members to add.</small>
-                                            <small id="need-members-to-add" style="display:none;" class="note note-info" >Please add a member.</small>
                                         </div>
-                                        <br>
-
+                                        <small id="no-more-members-to-add" style="display:none; margin-top:1%; margin-bottom:1%;" class="note note-danger" >There are no more members to add.</small>
+                                        <small id="need-members-to-add" style="display:none; margin-top:1%; margin-bottom:1%;" class="note note-info" >Please add a member.</small>
                                         <div id="showMemberList" style="margin:3%;"></div>
                                     </div> 
                                 </span>

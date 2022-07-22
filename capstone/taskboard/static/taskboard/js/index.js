@@ -16,7 +16,6 @@ function closeTaskboardModal() {
 // reset create taskboard modal form
 function resetForm() {
     document.getElementById('taskboard_name').value = "";
-    document.getElementById('taskboard_deadline').value = "";
     var ele = document.querySelectorAll('input[name = "taskboard_type"]');
     for(var i=0;i<ele.length;i++)
        ele[i].checked = false;
@@ -51,7 +50,6 @@ function editTaskboard(boardId) {
     .then(data => {
         taskboard = data["taskboard"]
         document.getElementById('taskboard_name').value = taskboard["title"]
-        document.getElementById('taskboard_deadline').value = taskboard["deadline"]
         console.log(taskboard["type"]);
         if (taskboard["type"] == "IND") {            
             document.getElementById('id_taskboard_type_1').disabled = true;
@@ -92,6 +90,11 @@ function load_all_users(listToExcludeAsStr) {
     var listToExclude = convertStrToListOfNumbers(listToExcludeAsStr);
     console.log("==========listToExclude:==============");
     console.log(listToExclude); 
+    if (!listToExclude) {
+        document.getElementById('need-members-to-add').style.display='block';
+    } else {
+        document.getElementById('need-members-to-add').style.display='none';
+    }
     console.log("==========members innerHTML length:==============");
     console.log(document.getElementById('members').innerHTML.length)
     if (document.getElementById('members').innerHTML.length > 0) {
@@ -126,12 +129,6 @@ function load_all_users(listToExcludeAsStr) {
             document.getElementById('member_to_be_added').disabled = false;
             document.getElementById('add-member-btn').disabled = false;
             document.getElementById('no-more-members-to-add').style.display='none';
-        }
-
-        if (!listToExclude) {
-            document.getElementById('need-members-to-add').style.display='block';
-        } else {
-            document.getElementById('need-members-to-add').style.display='none';
         }
 
     })

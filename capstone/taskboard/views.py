@@ -136,15 +136,15 @@ def create_taskboard(request):
         if form.is_valid():
             name = form.cleaned_data["taskboard_name"]
             type = form.cleaned_data["taskboard_type"]
-            deadline = form.cleaned_data["taskboard_deadline"]
+            # deadline = form.cleaned_data["taskboard_deadline"]
             members = form.cleaned_data["taskboard_members"]
             
             # for logging purposes
-            printLogForTaskboard(name, type, deadline, members)
+            printLogForTaskboard(name, type, members)
 
             if (len(name) > 0 and len(type) > 0):
                 # insert taskboard into db
-                taskboard = Taskboard(title=name, deadline=deadline, type=type, created_by=request.user, last_modified_by=request.user)
+                taskboard = Taskboard(title=name, type=type, created_by=request.user, last_modified_by=request.user)
                 taskboard.save()
                 print("Successfully Inserted Taskboard into DB: " + taskboard.getDict())
 
@@ -189,14 +189,14 @@ def edit_taskboard(request, boardId):
         if form.is_valid():
             name = form.cleaned_data["taskboard_name"]
             type = form.cleaned_data["taskboard_type"]
-            deadline = form.cleaned_data["taskboard_deadline"]
+            # deadline = form.cleaned_data["taskboard_deadline"]
             members = form.cleaned_data["taskboard_members"]
 
-            printLogForTaskboard(name, type, deadline, members)
+            printLogForTaskboard(name, type, members)
             
             taskboard.title = name
             taskboard.type = type
-            taskboard.deadline = deadline
+            # taskboard.deadline = deadline
             taskboard.last_modified_by = request.user
             taskboard.save()
 

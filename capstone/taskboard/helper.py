@@ -11,12 +11,12 @@ def getDiffBtnLists(li1, li2):
 ##########################################################
 ## Print log for taskboard
 ##########################################################
-def printLogForTaskboard(name, type, deadline, members):
+def printLogForTaskboard(name, type, members):
     print("Taskboard: " + name)
     print("New taskboard type: "+ type)
     print("New taskboard members list: " + members)
-    if (deadline is not None):
-        print("New taskboard deadline: " + deadline.strftime('%Y-%m-%d'))
+    # if (deadline is not None):
+    #     print("New taskboard deadline: " + deadline.strftime('%Y-%m-%d'))
 
 
 ###################################################
