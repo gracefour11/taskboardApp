@@ -29,20 +29,20 @@
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         {% for taskboard in allTBSOwnedByMe %}
                         <div class="col">
-                            <div class="card h-100" style="margin:5px;">
-                                <div class="card-chip">
-                                    <div class="dropdown">
-                                        <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-me" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </a>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-me">
-                                            <li><a class="dropdown-item" href="#" onclick="editTaskboard(`{{taskboard.id}}`)">Edit</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `T`, `{{taskboard.type}}`)">Leave</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="card-body row" style="display:inline-table;">
-                                        <td><img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/></td>
-                                        <td><h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4></td>
+                            <div class="card" style="margin:5px;">
+                                <div class="card-body card-body-taskboard">
+                                    <div class="taskboard-card-top">
+                                        <img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/>
+                                        <h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4>
+                                        <div class="dropdown taskboard-card-dropdown">
+                                            <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-me" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v icon-dropdown"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-me">
+                                                <li><a class="dropdown-item" href="#" onclick="editTaskboard(`{{taskboard.id}}`)">Edit</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `T`, `{{taskboard.type}}`)">Leave</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -55,19 +55,19 @@
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         {% for taskboard in allTBSOwnedByOthers %}
                         <div class="col">
-                            <div class="card h-100" style="margin:5px;">
-                                <div class="card-chip">
-                                    <div class="dropdown">
-                                        <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-others" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </a>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-others">
-                                            <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `F`, `{{taskboard.type}}`)">Leave</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="card-body row" style="display:inline-table;">
-                                        <td><img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/></td>
-                                        <td><h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4></td>
+                            <div class="card" style="margin:5px;">
+                                <div class="card-body card-body-taskboard">
+                                    <div class="taskboard-card-top">
+                                        <img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/>
+                                        <h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4>
+                                        <div class="dropdown taskboard-card-dropdown">
+                                            <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-others" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v icon-dropdown"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-others">
+                                                <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `F`, `{{taskboard.type}}`)">Leave</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -48,63 +48,46 @@ body {
     border-bottom-right-radius: 10px 10px;
   }
 
-/* .btn.vertical {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-} */
-
-/* #create-taskboard-btn, #go-to-my-taskboards-btn {
-    background-color: rgba(0, 0, 0, 0.658);
-    color: white;
-    margin: 4%;
-    padding: 1%;
-    width:20%;
-} */
 
 .btn:hover {
     transform: scale(1.1);
 }
 
-.card-chip {
-  display: inline-block;
-  /* width:80%; */
+.card-body-taskboard {
+  padding: 2%;
+  height: 80%;
 }
-
 .card-chip-img {
-  width: 26%;
+  width: 20%;
   height:auto;
-  position: absolute;
-  left: 2%;
-  top: 50%;
-  transform: translateY(-50%);
-  /* float:left;
-  width: 26%;
-  position: absolute;
-  left: 2%;
-  top: 50%;
-  transform: translateY(-50%); */
-  display: table-cell;
+  float: left;
+  vertical-align: middle;
 }
 
 .card-chip-text {
-  position:absolute;
-  left:35%;
-  top:50%;
-  transform: translateY(-50%);
-  display: table-cell;
-  /* line-height: 50px; */
+  float:center;
+} 
+
+.taskboard-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  
 }
 
+.taskboard-card-dropdown {
+  float: right;
+  transform: translate(0%,-50%);
+  z-index: 1;
+}
 
 .icon-dropdown {
-  position: absolute;
-  top: 0;
-  right: 3%;
+  color: rgb(1, 79, 122);
 }
 
 .icon-dropdown:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 /* The Modal (background) */
