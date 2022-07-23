@@ -1,17 +1,23 @@
 # CS50W Capstone: Taskboard
-This is a Taskboard app inspired by Google TasksBoard. Users can create their own taskboards and share them with other members of the app. They can create, manage and assign tasks on a full-screen Kanban board.
+This is a Taskboard app inspired by Jira and Trello boards. Users can create their own taskboards and share them with other members of the app. They can create, manage and assign tasks on a full-screen Kanban board.
+
+I've been working as a software engineer for over a year now and learnt about the Agile Methodology. One of the Agile tools covered was the Jira board which serves as an efficient project tracking tool that allows visualisation of the project's progress. It made me realise, this would be a really useful tool to have had back in my university days... especially in tracking assignment deadlines etc. 
+
+Hence, when I was deciding what to do for my capstone project, I immediately thought of creating a Taskboard app targetted for both students and (software) project teams. 
 
 ## Distinctiveness and Complexity
 I consider that this project meets all the expectations raised in the assignment of the CS50W final project, as it is a web platform that implements most of the concepts and techniques taught in the course.
 
 The project was built using Django as a backend framework and JavaScript as a frontend programming language. All generated information are saved in database (SQLite by default).
 
-All webpages of the project are mobile-responsive. I have included the Material Bootstrap library to make my front-end components mobile-responsive.
+All webpages of the project are mobile-responsive with the inclusion of Material Bootstrap library.
 
-The difference between this web app and previous projects is that this application makes use and manages the data to create/read/update/delete taskboards and tasks instantly. Taskboards can be modified without reloading the page.
+The difference between this web app and previous projects is that this application makes use and manages the data to create/read/update/delete taskboards and tasks instantly. 
+
 
 ## Installation
   - Install project dependencies by running `pip install -r requirements.txt`. 
+  - `cd` into capstone directory
   - Make and apply migrations by running `python manage.py makemigrations` and `python manage.py migrate`.
   - Create superuser with `python manage.py createsuperuser`. This step is optional.
   - Run `python manage.py runserver` to start the app.

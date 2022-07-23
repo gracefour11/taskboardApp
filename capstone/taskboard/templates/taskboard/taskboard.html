@@ -1,5 +1,6 @@
 {% extends "taskboard/layout.html" %}
 {% load static %}
+{% load taskboard_tags %}
 {% block title %}
   {{taskboard.title}}
 {% endblock %}
@@ -39,7 +40,6 @@
       <div class="section_col col-md-2" >
         <div class="section-top">
           <h3 >{{section.name}}</h3>
-          <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
           <div class="dropdown section-dropdown">
             <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink_{{section.id}}" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-ellipsis-v fa-lg icon-dropdown" ></i>
@@ -51,32 +51,77 @@
           </div>
         </div>
 
-        
+        <a class="btn btn-primary" id="create-task-btn" type="button" onclick="createTask(`{{taskboard.id}}`, `{{section.id}}`)" href="#" role="button">
+          <i class="fas fa-edit"></i>
+          Add New Task
+        </a> 
+        {% get_tasks_in_section section.id taskboard.id as tasks_in_section %}
+        {% for task in tasks_in_section %}
         <div class="card">
           <div class="card-body">
-            test
+            {{task.name}}
           </div>
         </div>
-        <div class="card">
-          <div class="card-body">
-            test
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body">
-            test
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-body">
-            test
-          </div>
-        </div>
+        {% endfor %}
       </div>
     {% endfor %}
   </div>
 </div>
 
+<!-- TASK MODAL start -->
+<div class="modal" tabindex="-1" role="dialog" id="taskModal">
+  {% if user.is_authenticated %}
+  <div class="modal-dialog" style="max-width:80%; vertical-align: middle;" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title" id="task-modal-title" ></h4>
+      <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeTaskModal();"><span aria-hidden="true"></span></button>
+    </div>
+      <form id="task_form" method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+              <div class="form-group row">
+                  <label for="task_name" class="col-sm-2 col-form-label">Name:</label>	&nbsp;
+                  <div class="col-sm-9">
+                      <input type="text" class="form-control" placeholder="Enter Task Name" name="task_name" id="task_name">
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label for="task_deadline" class="col-sm-2 col-form-label">Deadline:</label>	&nbsp;
+                  <div class="col-sm-9">
+                      <input type="date" class="form-control" placeholder="Enter Deadline" name="task_deadline" id="task_deadline">
+                  </div>
+              </div>
+              
+              <div class="form-group row">
+                  <label for="task_description" class="col-sm-2 col-form-label">Description:</label>	&nbsp;
+                  <div class="col-sm-9">
+                      <textarea class="form-control" rows="4" id="task_description" name="task_description" placeholder="Enter Task Description"></textarea>
+                  </div>
+              </div>
+              {% if taskboardIsGrp %}
+              <div class="form-group row" >
+                <label for="task_assignee" class="col-sm-2 col-form-label">Assign to:</label>	&nbsp;
+                <div class="col-sm-9">
+                    <select class="form-select" aria-label="Default select example" id="task_assignee" name="task_assignee">
+                    </select>
+                </div> 
+              </div> 
+              {% endif %}
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closeTaskModal();">Cancel</button>
+              <button type="submit" class="btn btn-primary" id="submit-task-btn">
+          </div>
+      </form>
+  </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+  {% endif %}
+</div><!-- /.modal -->
+<!-- TASK MODAL end -->
+
+<!-- Section Modal -->
 <div class="modal" tabindex="-1" role="dialog" id="sectionModal">
   {% if user.is_authenticated %}
       <div class="modal-dialog" style="max-width:65%; vertical-align: middle;" role="document">

@@ -241,13 +241,15 @@ def get_taskboard_contents(request, boardId):
             taskboard = Taskboard.objects.get(id=boardId)
             if (taskboard.type == TASKBOARD_TYPE_GRP):
                 # insert member list (id and name) into serialised taskboard (if it's group)
-                memberList_ids = User2Taskboard.objects.filter(taskboard=taskboard, user_role=USER_ROLE_MEMBER, delete_ind=DELETE_IND_F).values_list('user', flat=True)
-                memberList_user = User.objects.filter(id__in=memberList_ids)
+                memberList_user2taskboard = User2Taskboard.objects.filter(taskboard=taskboard, user_role=USER_ROLE_MEMBER, delete_ind=DELETE_IND_F).values_list('user', flat=True)
+                memberList_user = User.objects.filter(id__in=memberList_user2taskboard)
                 print("===== memberList ======")
                 print(memberList_user)
+                owner_user2taskboard = User2Taskboard.objects.get(taskboard=taskboard, user_role=USER_ROLE_OWNER, delete_ind=DELETE_IND_F)
                 return JsonResponse({
                     'taskboard': taskboard.serialize(),
-                    'taskboard_members': [user.serialize() for user in memberList_user]
+                    'taskboard_members': [user.serialize() for user in memberList_user],
+                    'taskboard_owner': owner_user2taskboard.user.serialize()
                 })
             else:
                 return JsonResponse({
@@ -303,23 +305,29 @@ def delete_taskboard(request, boardId):
 @login_required
 def go_to_taskboard(request, boardId):
     taskboard = Taskboard.objects.get(id=boardId)
-    sections = Section.objects.filter(taskboard=taskboard, delete_ind=DELETE_IND_F)
+    sections = Section.objects.filter(taskboard=taskboard, delete_ind=DELETE_IND_F).order_by('created_dt')
     user2taskboard_owner = User2Taskboard.objects.get(taskboard=taskboard, user_role=USER_ROLE_OWNER, delete_ind=DELETE_IND_F)
     isOwner = False
     if request.user.id == user2taskboard_owner.user.id:
         isOwner = True
     
+    taskboardIsGrp = False
+    if taskboard.type == TASKBOARD_TYPE_GRP:
+        taskboardIsGrp = True
+    
     sectionForm = CreateEditSectionForm()
     taskboardForm = CreateEditTaskboardForm()
-    print("current request user: " + request.user.username)
-    print("taskboard owner: " + user2taskboard_owner.user.username)
+    taskForm = CreateEditTaskForm()
+
 
     return render(request, "taskboard/taskboard.html", {
         "taskboard": taskboard,
         "sections": sections,
         "isOwner": isOwner,
         "sectionForm": sectionForm,
-        "taskboardForm": taskboardForm
+        "taskboardForm": taskboardForm,
+        "taskForm": taskForm,
+        "taskboardIsGrp": taskboardIsGrp,
     })
 
 
@@ -337,7 +345,7 @@ def create_section(request, boardId):
             section.save()
             print("Successfully inserted Section into DB: " + section_name + " in taskboard " + taskboard.title)
     
-    return redirect(reverse('go_to_taskboard', kwargs={ 'boardId': boardId}))
+    return redirect('go_to_taskboard', boardId=section.taskboard.id)
 
 ###################################################
 ### FUNCTION TO EDIT SECTION
@@ -353,7 +361,7 @@ def edit_section(request, boardId, sectionId):
             section.save()
             print("Successfully updated Section into DB: " + section.name + " in taskboard " + section.taskboard.title)
     
-    return redirect(reverse('go_to_taskboard', kwargs={ 'boardId': section.taskboard.id}))
+    return redirect('go_to_taskboard', boardId=section.taskboard.id)
 
 ###################################################
 ### FUNCTION TO DELETE SECTION
@@ -371,4 +379,34 @@ def delete_section(request, boardId, sectionId):
             section.save()
             print("Successfully deleted Section from DB: " + section.name + " from taskboard " + section.taskboard.title)
     
-    return redirect(reverse('go_to_taskboard', kwargs={ 'boardId': section.taskboard.id}))
+    return redirect('go_to_taskboard', boardId=section.taskboard.id)
+
+###################################################
+### FUNCTION TO CREATE TASK
+###################################################
+@login_required
+def create_task(request, boardId, sectionId):
+    if request.method == "POST":
+        taskForm = CreateEditTaskForm(request.POST)
+        print(taskForm.errors)
+        if taskForm.is_valid():
+            name = taskForm.cleaned_data["task_name"]
+            deadline = taskForm.cleaned_data["task_deadline"]
+            assignee_username = taskForm.cleaned_data["task_assignee"]
+            description = taskForm.cleaned_data["task_description"]
+            
+            assignee = None
+            if len(assignee_username) == 0:
+                assignee = request.user
+            else:
+                assignee = User.objects.get(username=assignee_username)
+            
+            if deadline == None:
+                deadline = None
+            
+            taskboard = Taskboard.objects.get(id=boardId)
+            section = Section.objects.get(id=sectionId)
+            task = Task(name=name, deadline=deadline, assignee=assignee, description=description, section=section, taskboard=taskboard, created_by=request.user, last_modified_by=request.user)
+            task.save()
+    
+    return redirect('go_to_taskboard', boardId=boardId)        
