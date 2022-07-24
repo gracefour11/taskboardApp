@@ -91,6 +91,7 @@ class Task(models.Model):
     last_modified_dt = models.DateTimeField(auto_now_add=False, auto_now=True)
     last_modified_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name='Task_last_modified_by')
     delete_ind = models.CharField(max_length=1, default='F')
+    complete_ind = models.CharField(max_length=1, default='F')
 
     def serialize(self):
         deadlineInDict = self.deadline
@@ -108,6 +109,7 @@ class Task(models.Model):
             "last_modified_by": self.last_modified_by.username,
             "last_modified_dt": self.last_modified_dt.strftime('%Y-%m-%d'),
             "created_by": self.created_by.username,
-            "created_dt": self.created_dt.strftime('%Y-%m-%d')
+            "created_dt": self.created_dt.strftime('%Y-%m-%d'),
+            "complete_ind": self.complete_ind
         }
 

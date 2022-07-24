@@ -55,11 +55,15 @@
           <i class="fas fa-plus-circle"></i>
           Add New Task
         </a> 
-        {% get_tasks_in_section section.id taskboard.id as tasks_in_section %}
-        {% for task in tasks_in_section %}
+        {% get_uncompleted_tasks_in_section section.id taskboard.id as uncompleted_tasks %}
+        {% for task in uncompleted_tasks %}
         <div class="card task-card">
           <div class="task-card-top card-header">
-            <h5>{{task.name}}</h5>
+            <span>
+              <input type="checkbox" class="task-checkbox" id="task_checkbox_{{task.id}}" onclick="completeTask(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
+              &nbsp;&nbsp;&nbsp;
+              <label for="task_checkbox_{{task.id}}"><h5>{{task.name}}</h5></label>
+            </span>
             <div class="task-card-top-icons">
               <a class="icon-dropdown text-right" href="#" onclick="editTask(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
                 <i class="fas fa-edit icon-dropdown" ></i>

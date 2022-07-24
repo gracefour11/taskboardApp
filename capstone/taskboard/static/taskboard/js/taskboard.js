@@ -91,6 +91,19 @@ function deleteTask(boardId, sectionId, taskId) {
     });
 }
 
+function completeTask(boardId, sectionId, taskId) {
+    fetch(`/taskboard/${boardId}/section/${sectionId}/task/${taskId}/complete`, {
+        method: 'POST',
+        body: JSON.stringify({
+            complete_ind: 'T'
+        })
+    })
+    .then(response => response.json())
+    .then(() => {
+        document.location.reload();
+    });
+}
+
 function resetTaskForm() {
     document.getElementById('task_name').value = "";
     document.getElementById('task_description').value = "";

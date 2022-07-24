@@ -5,10 +5,10 @@ from ..constants import *
 register = template.Library()
 
 @register.simple_tag
-def get_tasks_in_section(sectionId, boardId):
+def get_uncompleted_tasks_in_section(sectionId, boardId):
     section = Section.objects.get(id=sectionId)
     taskboard = Taskboard.objects.get(id=boardId)
-    tasks = Task.objects.filter(section=section, taskboard=taskboard, delete_ind=DELETE_IND_F)
+    tasks = Task.objects.filter(section=section, taskboard=taskboard, delete_ind=DELETE_IND_F, complete_ind=COMPLETE_IND_F)
     return tasks
 
 @register.simple_tag

@@ -77,3 +77,7 @@ div.scroll {
     margin-top:2%;
     margin-bottom: 2%;
 }
+
+.task-checkbox:hover {
+    transform: scale(1.1);
+}

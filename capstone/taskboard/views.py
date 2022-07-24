@@ -486,3 +486,21 @@ def delete_task(request, boardId, sectionId, taskId):
         else:
             return JsonResponse({'message': 'Task is not deleted.'})
     return JsonResponse({'error': 'POST request required.'}, status=400)
+
+###################################################
+### FUNCTION TO DELETE TASK
+###################################################
+@csrf_exempt
+@login_required
+def complete_task(request, boardId, sectionId, taskId):
+    if request.method == "POST":
+        task = Task.objects.get(id=taskId)
+        json_data = json.loads(request.body)
+        complete_ind = json_data.get("complete_ind")
+        if (complete_ind == COMPLETE_IND_T):
+            task.complete_ind = COMPLETE_IND_T
+            task.save()
+            return JsonResponse({'success': 'Task completed successfully.'})
+        else:
+            return JsonResponse({'message': 'Task is not completed.'})
+    return JsonResponse({'error': 'POST request required.'}, status=400)
