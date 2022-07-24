@@ -37,7 +37,7 @@ div.scroll {
     white-space: nowrap;
     margin:1%; 
     height:100%;
-    width: 100%;
+    /* width: 100%; */
     display: flex;
   }
 
@@ -54,14 +54,14 @@ div.scroll {
     display: inline-flex;
 }
 
-.section-top {
+.section-top, .task-card-top {
     display: flex;
     align-items: stretch;
     justify-content: space-between;
     flex-direction: row;
 }
 
-.section-dropdown {
+.section-dropdown, .task-card-top-icons {
     float: right;
 }
 
@@ -71,4 +71,9 @@ div.scroll {
 
 .icon-dropdown:hover {
     transform: scale(1.1);
+}
+
+.task-card {
+    margin-top:2%;
+    margin-bottom: 2%;
 }

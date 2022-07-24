@@ -374,11 +374,18 @@ def delete_section(request, boardId, sectionId):
         print(form.errors)
         print("deleting section")
         if form.is_valid():
+            # soft deleting associated tasks (child) in section (parent)
+            tasks = Task.objects.filter(section=section)
+            for task in tasks:
+                task.delete_ind = DELETE_IND_T
+                task.save()
+
+            # soft delete section (parent)
             section.delete_ind = DELETE_IND_T
             section.last_modified_by = request.user
             section.save()
             print("Successfully deleted Section from DB: " + section.name + " from taskboard " + section.taskboard.title)
-    
+
     return redirect('go_to_taskboard', boardId=section.taskboard.id)
 
 ###################################################
@@ -410,3 +417,72 @@ def create_task(request, boardId, sectionId):
             task.save()
     
     return redirect('go_to_taskboard', boardId=boardId)        
+
+###################################################
+### FUNCTION TO GET TASK CONTENTS
+###################################################
+@login_required
+def get_task_contents(request, boardId, sectionId, taskId):
+    try:
+        task = Task.objects.get(id=taskId)
+    except Task.DoesNotExist:
+        return JsonResponse({"error": "Task not found."}, status=404)
+    
+    if request.method == "GET":
+        return JsonResponse(task.serialize())
+    else:
+        return JsonResponse({
+            "error": "GET request required."
+        }, status=400)
+
+###################################################
+### FUNCTION TO EDIT TASK
+###################################################
+@login_required
+def edit_task(request, boardId, sectionId, taskId):
+    if request.method == "POST":
+        taskForm = CreateEditTaskForm(request.POST)
+        print(taskForm.errors)
+        if taskForm.is_valid():
+            name = taskForm.cleaned_data["task_name"]
+            deadline = taskForm.cleaned_data["task_deadline"]
+            assignee_username = taskForm.cleaned_data["task_assignee"]
+            description = taskForm.cleaned_data["task_description"]
+            
+            assignee = None
+            if len(assignee_username) == 0:
+                assignee = request.user
+            else:
+                assignee = User.objects.get(username=assignee_username)
+            
+            if deadline == None:
+                deadline = None
+            
+            # updating task object
+            task = Task.objects.get(id=taskId)
+            task.name = name
+            task.deadline = deadline
+            task.assignee = assignee
+            task.description = description
+            task.last_modified_by = request.user            
+            task.save()
+    
+    return redirect('go_to_taskboard', boardId=boardId)        
+
+###################################################
+### FUNCTION TO DELETE TASK
+###################################################
+@csrf_exempt
+@login_required
+def delete_task(request, boardId, sectionId, taskId):
+    if request.method == "POST":
+        task = Task.objects.get(id=taskId)
+        json_data = json.loads(request.body)
+        delete_ind = json_data.get("delete_ind")
+        if (delete_ind == DELETE_IND_T):
+            task.delete_ind = DELETE_IND_T
+            task.save()
+            return JsonResponse({'success': 'Task deleted successfully.'})
+        else:
+            return JsonResponse({'message': 'Task is not deleted.'})
+    return JsonResponse({'error': 'POST request required.'}, status=400)

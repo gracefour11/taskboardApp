@@ -102,7 +102,7 @@ class Task(models.Model):
             "id": self.id,
             "name": self.name,
             "deadline": deadlineInDict,
-            "section": self.section,
+            "section": self.section.id,
             "assignee": self.assignee.username,
             "description": self.description,
             "last_modified_by": self.last_modified_by.username,

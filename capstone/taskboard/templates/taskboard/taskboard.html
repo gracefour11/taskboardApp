@@ -52,14 +52,32 @@
         </div>
 
         <a class="btn btn-primary" id="create-task-btn" type="button" onclick="createTask(`{{taskboard.id}}`, `{{section.id}}`)" href="#" role="button">
-          <i class="fas fa-edit"></i>
+          <i class="fas fa-plus-circle"></i>
           Add New Task
         </a> 
         {% get_tasks_in_section section.id taskboard.id as tasks_in_section %}
         {% for task in tasks_in_section %}
-        <div class="card">
-          <div class="card-body">
-            {{task.name}}
+        <div class="card task-card">
+          <div class="task-card-top card-header">
+            <h5>{{task.name}}</h5>
+            <div class="task-card-top-icons">
+              <a class="icon-dropdown text-right" href="#" onclick="editTask(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
+                <i class="fas fa-edit icon-dropdown" ></i>
+              </a>
+              <a class="icon-dropdown text-right" href="#" onclick="confirmDelete(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
+                <i class="fas fa-trash-alt icon-dropdown" ></i>
+              </a>
+            </div>
+          </div>
+          <div class="card-body task-card-body">
+            <p class="card-text">Deadline: {{task.deadline}}</p>
+            {% if taskboardIsGrp %}
+            <p class="card-text">Assigned to: {{task.assignee}}</p>
+            {% endif %}
+            <p><a data-bs-toggle="collapse" href="#task_description_collapse_{{task.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">See description</a></p>
+            <div class="collapse multi-collapse" id="task_description_collapse_{{task.id}}">
+              <p class="card-text">{{task.description}}</p>
+            </div>
           </div>
         </div>
         {% endfor %}
@@ -105,6 +123,10 @@
                 <label for="task_assignee" class="col-sm-2 col-form-label">Assign to:</label>	&nbsp;
                 <div class="col-sm-9">
                     <select class="form-select" aria-label="Default select example" id="task_assignee" name="task_assignee">
+                      {% get_all_users_in_taskboard taskboard.id as users_in_taskboard %}
+                      {% for user in users_in_taskboard %}
+                        <option value="{{user.username}}">{{user.username}}</option>
+                      {% endfor %}
                     </select>
                 </div> 
               </div> 
