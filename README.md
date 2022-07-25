@@ -47,5 +47,7 @@ The difference between this web app and previous projects is that this applicati
     - `views.py` respectively, contains all application views.
   - `capstone` - project directory.
 
-## Future Enhancements
-  - Use WebSockets to introduce real-time updates for Group Taskboards
+## Possible Enhancements
+  - Do a Drag and Drop style for tasks on the taskboard page
+  - Use Django Channels to introduce real-time updates for Group Taskboards
+  - Perhaps, once Django Channels is integrated, a group chat function within the taskboard can be done (similar to a Zoom meeting room chat)
