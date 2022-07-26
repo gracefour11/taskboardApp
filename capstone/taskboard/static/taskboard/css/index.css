@@ -46,6 +46,8 @@ body {
     border-width: 2px;
     border-bottom-left-radius: 10px 10px;
     border-bottom-right-radius: 10px 10px;
+    overflow-y: auto;
+    height:60vh;
   }
 
 
@@ -88,6 +90,12 @@ body {
 
 .icon-dropdown:hover {
   transform: scale(1.1);
+}
+
+/*Remove the scrollbar from Chrome, Safari, Edge and IE*/
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
 }
 
 /* The Modal (background) */
