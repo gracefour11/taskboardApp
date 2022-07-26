@@ -47,6 +47,13 @@ div.scroll {
     margin:1%; 
     height:80vh;
     padding: 1%;
+    overflow-y: auto;
+}
+
+/*Remove the scrollbar from Chrome, Safari, Edge and IE*/
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
 }
 
 #taskboard-top-menu {

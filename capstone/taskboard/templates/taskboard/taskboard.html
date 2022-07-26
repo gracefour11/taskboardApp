@@ -37,7 +37,7 @@
 <div class="container-fluid">
   <div class="scroll">
     {% for section in sections %}
-      <div class="section_col col-md-2" >
+      <div class="section_col col-md-3" >
         <div class="section-top">
           <h3 >{{section.name}}</h3>
           <div class="dropdown section-dropdown">
@@ -50,7 +50,6 @@
             </ul>
           </div>
         </div>
-
         <a class="btn btn-primary" id="create-task-btn" type="button" onclick="createTask(`{{taskboard.id}}`, `{{section.id}}`)" href="#" role="button">
           <i class="fas fa-plus-circle"></i>
           Add New Task
@@ -85,7 +84,43 @@
           </div>
         </div>
         {% endfor %}
+        <br>
+        <br>
+        <a class="btn btn-info" data-mdb-toggle="collapse" href="#collapse_completed_tasks_{{section.id}}" role="button" aria-expanded="false" aria-controls="collapse_completed_tasks">
+          <i class="fas fa-angle-double-down"></i> 
+          &nbsp;&nbsp;&nbsp;See Completed Tasks
+        </a>
+        <div id="collapse_completed_tasks_{{section.id}}" class="collapse multi-collapse">
+          {% get_completed_tasks_in_section section.id taskboard.id as completed_tasks %}
+          {% for task in completed_tasks %}
+          <div class="card task-card">
+            <div class="task-card-top card-header">
+              <span>
+                <input type="checkbox" class="task-checkbox" id="task_checkbox_{{task.id}}" checked disabled="true">
+                &nbsp;&nbsp;&nbsp;
+                <label for="task_checkbox_{{task.id}}"><h5>{{task.name}}</h5></label>
+              </span>
+              <div class="task-card-top-icons">
+                <a class="icon-dropdown text-right" href="#" onclick="confirmDelete(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
+                  <i class="fas fa-trash-alt icon-dropdown" ></i>
+                </a>
+              </div>
+            </div>
+            <div class="card-body task-card-body">
+              <p class="card-text">Deadline: {{task.deadline}}</p>
+              {% if taskboardIsGrp %}
+              <p class="card-text">Assigned to: {{task.assignee}}</p>
+              {% endif %}
+              <p><a data-bs-toggle="collapse" href="#task_description_collapse_{{task.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">See description</a></p>
+              <div class="collapse multi-collapse" id="task_description_collapse_{{task.id}}">
+                <p class="card-text">{{task.description}}</p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}    
+        </div>
       </div>
+    
     {% endfor %}
   </div>
 </div>
