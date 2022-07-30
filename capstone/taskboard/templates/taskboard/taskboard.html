@@ -5,9 +5,10 @@
   {{taskboard.title}}
 {% endblock %}
 {% block import_scripts %}
-    <link href="{% static 'taskboard/css/taskboard.css' %}" rel="stylesheet">
-    <script type ="text/javascript" src="{% static 'taskboard/js/taskboard.js' %}"></script>
-    <script type ="text/javascript" src="{% static 'taskboard/js/index.js' %}"></script>
+  <link href="{% static 'taskboard/css/taskboard.css' %}" rel="stylesheet">
+  <script type ="text/javascript" src="{% static 'taskboard/js/taskboard.js' %}"></script>
+  <script type ="text/javascript" src="{% static 'taskboard/js/index.js' %}"></script>
+
 {% endblock %}
 {% block main %}
 <div id="taskboard-top-menu">
@@ -85,9 +86,13 @@
             </div>
           </div>
           <div class="card-body task-card-body">
-            <p class="card-text">Deadline: {{task.deadline}}</p>
+            {% check_deadline_of_task task.id as gotDeadline %}
+            {% if gotDeadline %}
+              <p class="card-text">Deadline: <strong>{{task.deadline}}</strong></p>
+            {% endif %}
             {% if taskboardIsGrp %}
-            <p class="card-text">Assigned to: {{task.assignee}}</p>
+              {% print_assignee_of_task task.assignee user as assignee_name %}
+              <p class="card-text">Assigned to: <strong>{{ assignee_name }}</strong></p>
             {% endif %}
             <p><a data-bs-toggle="collapse" href="#task_description_collapse_{{task.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">See description</a></p>
             <div class="collapse multi-collapse" id="task_description_collapse_{{task.id}}">
@@ -205,12 +210,13 @@
               <form id="section_form" method="post">
                   {% csrf_token %}
                   <div class="modal-body">
-                      <div class="form-group row">
+                      <div class="form-group row section-form-div">
                           <label for="section_name" class="col-sm-2 col-form-label">Title:</label>	&nbsp;
                           <div class="col-sm-9">
-                              <input type="text" class="form-control" placeholder="Enter Title" name="section_name" id="section_name" value="">
+                              <input type="text" class="form-control" placeholder="Enter Title" name="section_name" id="section_name">
                           </div> 
                       </div> <br>
+
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeSectionModal();">Cancel</button>
@@ -296,7 +302,8 @@
                                   <div id="showMemberList" style="margin:3%;"></div>
                               </div> 
                           </span>
-                      </div>  
+                      </div> 
+
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeTaskboardModal();">Cancel</button>

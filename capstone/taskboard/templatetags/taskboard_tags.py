@@ -38,3 +38,17 @@ def get_sections_count_in_taskboard(boardId):
     if sections_count > 1:
         return True
     return False
+
+@register.simple_tag
+def print_assignee_of_task(assignee, currUser):
+    if currUser.id == assignee.id:
+        return "Me"
+    else:
+        return assignee.username
+
+@register.simple_tag
+def check_deadline_of_task(taskId):
+    task = Task.objects.get(id=taskId)
+    if task.deadline == None:
+        return False
+    return True

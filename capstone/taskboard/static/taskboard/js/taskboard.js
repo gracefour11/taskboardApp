@@ -65,7 +65,7 @@ function createTask(boardId, sectionId) {
     document.getElementById('task_form').action = `/taskboard/${boardId}/section/${sectionId}/task/create`;
     document.getElementById('submit-task-btn').innerHTML = "Create";
     resetTaskForm();
-    openTaskModal(boardId);
+    openTaskModal();
 }
 
 function editTask(boardId, sectionId, taskId) {
@@ -78,7 +78,7 @@ function editTask(boardId, sectionId, taskId) {
     document.getElementById('task_form').action = editTaskUrl;
     document.getElementById('submit-task-btn').innerHTML = "Save Changes";
     
-    openTaskModal(boardId);
+    openTaskModal();
 
     fetch(getTaskUrl)
     .then(response => response.json())
@@ -134,13 +134,12 @@ function resetTaskForm() {
     document.getElementById('task_deadline').value = "";
 }
 
-function openTaskModal(boardId) {
+function openTaskModal() {
     document.getElementById('taskModal').style.display = "block";
 }
 
 function closeTaskModal() {
     document.getElementById('taskModal').style.display = "none";
 }
-
 
 
