@@ -366,27 +366,29 @@ def edit_section(request, boardId, sectionId):
 ###################################################
 ### FUNCTION TO DELETE SECTION
 ###################################################
+@csrf_exempt
 @login_required
 def delete_section(request, boardId, sectionId):
-    section = Section.objects.get(id=sectionId)
-    if (request.method == "POST"):
-        form = DeleteSectionForm(request.POST)
-        print(form.errors)
-        print("deleting section")
-        if form.is_valid():
+    if request.method == "POST":
+        section = Section.objects.get(id=sectionId)
+        json_data = json.loads(request.body)
+        delete_ind = json_data.get("delete_ind")
+        if (delete_ind == DELETE_IND_T):
             # soft deleting associated tasks (child) in section (parent)
             tasks = Task.objects.filter(section=section)
             for task in tasks:
                 task.delete_ind = DELETE_IND_T
+                task.last_modified_by = request.user
                 task.save()
-
-            # soft delete section (parent)
+            
             section.delete_ind = DELETE_IND_T
             section.last_modified_by = request.user
             section.save()
-            print("Successfully deleted Section from DB: " + section.name + " from taskboard " + section.taskboard.title)
+            return JsonResponse({'success': 'Section deleted successfully.'})
+        else:
+            return JsonResponse({'message': 'Task is not deleted.'})
+    return JsonResponse({'error': 'POST request required.'}, status=400)
 
-    return redirect('go_to_taskboard', boardId=section.taskboard.id)
 
 ###################################################
 ### FUNCTION TO CREATE TASK
@@ -488,7 +490,7 @@ def delete_task(request, boardId, sectionId, taskId):
     return JsonResponse({'error': 'POST request required.'}, status=400)
 
 ###################################################
-### FUNCTION TO DELETE TASK
+### FUNCTION TO COMPLETE TASK
 ###################################################
 @csrf_exempt
 @login_required
@@ -503,4 +505,22 @@ def complete_task(request, boardId, sectionId, taskId):
             return JsonResponse({'success': 'Task completed successfully.'})
         else:
             return JsonResponse({'message': 'Task is not completed.'})
+    return JsonResponse({'error': 'POST request required.'}, status=400)
+
+
+
+###################################################
+### FUNCTION TO MOVE TASK
+###################################################
+@csrf_exempt
+@login_required
+def move_task(request, boardId, sectionId, taskId):
+    if request.method == "POST":
+        task = Task.objects.get(id=taskId)
+        json_data = json.loads(request.body)
+        new_section_id = json_data.get("new_section_id")
+        new_section = Section.objects.get(id=new_section_id)
+        task.section = new_section
+        task.save()
+        return JsonResponse({'success': 'Task moved to new section successfully.'})
     return JsonResponse({'error': 'POST request required.'}, status=400)

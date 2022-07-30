@@ -29,13 +29,34 @@ function editSection(boardId, sectionId, sectionName) {
     openSectionModal();
 }
 
-function openDeleteSectionModal(boardId, sectionId) {
-    document.getElementById('deleteSectionModal').style.display = "block";
-    document.getElementById('delete_section_form').action =  `/taskboard/${boardId}/section/${sectionId}/delete`;
+function openDeleteSectionTaskModal() {
+    document.getElementById('deleteSectionTaskModal').style.display = "block";
 }
 
-function closeDeleteSectionModal() {
-    document.getElementById('deleteSectionModal').style.display = "none";
+function closeDeleteSectionTaskModal() {
+    document.getElementById('deleteSectionTaskModal').style.display = "none";
+}
+
+function confirmDeleteSection(boardId, sectionId) {
+    openDeleteSectionTaskModal();
+    document.getElementById('delete-modal-title').innerHTML = "Are you sure to delete this section?";
+    document.getElementById('delete-modal-msg').innerHTML = "All tasks in this section will also be deleted. This action cannot be reverted.";
+    const deleteSectionUrl = `/taskboard/${boardId}/section/${sectionId}/delete`;
+    document.getElementById('delete-modal-btn').onclick = function() { deleteSectionOrTask(deleteSectionUrl); };
+}
+
+function deleteSectionOrTask(url) {
+    fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({
+            delete_ind: 'T'
+        })
+    })
+    .then(response => response.json())
+    .then(() => {
+        closeDeleteSectionTaskModal();
+        document.location.reload();
+    });    
 }
 
 // Setting up the create task modal
@@ -71,18 +92,21 @@ function editTask(boardId, sectionId, taskId) {
     });
 }
 
-function confirmDelete(boardId, sectionId, taskId) {
-    var result = confirm("Are you sure you want to delete this task?");
-    if (result) {
-        deleteTask(boardId, sectionId, taskId);
-    }
+function confirmDeleteTask(boardId, sectionId, taskId) {
+    openDeleteSectionTaskModal();
+    document.getElementById('delete-modal-title').innerHTML = "Are you sure to delete this task?";
+    document.getElementById('delete-modal-msg').innerHTML = "This action cannot be reverted.";
+    const deleteTaskUrl = `/taskboard/${boardId}/section/${sectionId}/task/${taskId}/delete`;
+    document.getElementById('delete-modal-btn').onclick = function() { deleteSectionOrTask(deleteTaskUrl); };
+
 }
 
-function deleteTask(boardId, sectionId, taskId) {
-    fetch(`/taskboard/${boardId}/section/${sectionId}/task/${taskId}/delete`, {
+
+function completeTask(boardId, sectionId, taskId) {
+    fetch(`/taskboard/${boardId}/section/${sectionId}/task/${taskId}/complete`, {
         method: 'POST',
         body: JSON.stringify({
-            delete_ind: 'T'
+            complete_ind: 'T'
         })
     })
     .then(response => response.json())
@@ -91,11 +115,11 @@ function deleteTask(boardId, sectionId, taskId) {
     });
 }
 
-function completeTask(boardId, sectionId, taskId) {
-    fetch(`/taskboard/${boardId}/section/${sectionId}/task/${taskId}/complete`, {
+function moveTask(boardId, sectionId, taskId, newSectionId) {
+    fetch(`/taskboard/${boardId}/section/${sectionId}/task/${taskId}/move`, {
         method: 'POST',
         body: JSON.stringify({
-            complete_ind: 'T'
+            new_section_id: newSectionId
         })
     })
     .then(response => response.json())

@@ -39,14 +39,14 @@
     {% for section in sections %}
       <div class="section_col col-md-3" >
         <div class="section-top">
-          <h3 >{{section.name}}</h3>
+          <h4>{{section.name}}</h4>
           <div class="dropdown section-dropdown">
             <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink_{{section.id}}" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-ellipsis-v fa-lg icon-dropdown" ></i>
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink_{{section.id}}">
               <li><a class="dropdown-item" href="#" onclick="editSection(`{{taskboard.id}}`,`{{section.id}}`,`{{section.name}}`)">Rename</a></li>
-              <li><a class="dropdown-item" href="#" onclick="openDeleteSectionModal(`{{taskboard.id}}`,`{{section.id}}`)">Delete</a></li>
+              <li><a class="dropdown-item" href="#" onclick="confirmDeleteSection(`{{taskboard.id}}`,`{{section.id}}`)">Delete</a></li>
             </ul>
           </div>
         </div>
@@ -67,7 +67,7 @@
               <a class="icon-dropdown text-right" href="#" onclick="editTask(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
                 <i class="fas fa-edit icon-dropdown" ></i>
               </a>
-              <a class="icon-dropdown text-right" href="#" onclick="confirmDelete(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
+              <a class="icon-dropdown text-right" href="#" onclick="confirmDeleteTask(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
                 <i class="fas fa-trash-alt icon-dropdown" ></i>
               </a>
             </div>
@@ -101,7 +101,7 @@
                 <label for="task_checkbox_{{task.id}}"><h5>{{task.name}}</h5></label>
               </span>
               <div class="task-card-top-icons">
-                <a class="icon-dropdown text-right" href="#" onclick="confirmDelete(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
+                <a class="icon-dropdown text-right" href="#" onclick="confirmDeleteTask(`{{taskboard.id}}`, `{{section.id}}`, `{{task.id}}`)">
                   <i class="fas fa-trash-alt icon-dropdown" ></i>
                 </a>
               </div>
@@ -212,24 +212,21 @@
 </div><!-- /.modal -->
 <!-- section MODAL end -->
 
-<div class="modal" tabindex="-1" role="dialog" id="deleteSectionModal">
+<div class="modal" tabindex="-1" role="dialog" id="deleteSectionTaskModal">
   {% if user.is_authenticated %}
       <div class="modal-dialog" style="max-width:65%; vertical-align: middle;" role="document">
           <div class="modal-content">
-              <div class="modal-header">
-                  <h4 class="modal-title" id="delete-section-modal-title">Are you sure to delete this section?</h4>
-                  <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeDeleteSectionModal();"><span aria-hidden="true"></span></button>
-              </div>
-              <form id="delete_section_form" method="post">
-              {% csrf_token %}
-              <div class="modal-body">
-                <h5 id="delete-section-msg">All tasks in this section will also be deleted. This action cannot be reverted.</h5> 
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteSectionModal();">Cancel</button>
-                <button type="submit" class="btn btn-primary" id="delete-section-btn">Delete</button>
-              </div>
-            </form>
+            <div class="modal-header">
+                <h4 class="modal-title" id="delete-modal-title"></h4>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="closeDeleteSectionTaskModal();"><span aria-hidden="true"></span></button>
+            </div>
+            <div class="modal-body">
+              <h5 id="delete-modal-msg"></h5> 
+            </div>
+            <div class="modal-footer">
+              <a class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteSectionTaskModal();">Cancel</a>
+              <a class="btn btn-primary" id="delete-modal-btn">Delete</a>
+            </div>
           </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
   {% endif %}
