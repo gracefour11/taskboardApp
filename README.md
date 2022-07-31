@@ -12,7 +12,7 @@ The project was built using Django as a backend framework and JavaScript as a fr
 
 All webpages of the project are mobile-responsive with the inclusion of Material Bootstrap library.
 
-The difference between this web app and previous projects is that this application makes use and manages the data to create/read/update/delete taskboards and tasks instantly. 
+The difference between this web app and previous projects is that this application makes use and manages the data to create/read/update/delete taskboards, sections and tasks instantly.
 
 
 ## Installation
@@ -36,15 +36,19 @@ The difference between this web app and previous projects is that this applicati
         - `welcome.html` - main template for unregistered users. It shows login and registration forms.
         - `index.html` - main templates that shows all the taskboards (only for registered users).
         - `taskboard.html` - template that shows a taskboard page.
-
+    - `templatetags` stores the custom Django template tags
+        - `taskboard_tags.py` contains the code for custom Django template tags for the application
     - `models.py` contains the models I used in the project: 
-        1. `User` model extends the standard AbstractUser model.
-        2. `Taskboard` model is for taskboards.
-        3. `User2Taskboard` represents the mapping of users to taskboards.
-        4. `Task` model is for tasks.
+        - `User` model extends the standard AbstractUser model.
+        - `Taskboard` model is for taskboards.
+        - `User2Taskboard` represents the mapping of users to taskboards.
+        - `Section` model is for sections, i.e. lists of tasks on a taskboard.
+        - `Task` model is for tasks.
         
-    - `urls.py` - all application URLs.
-    - `views.py` respectively, contains all application views.
+    - `urls.py` contains all application URLs.
+    - `views.py` contains all application views.
+    - `constants.py` contains all the constants used in the application backend
+    - `helper.py` contains all helper functions in the application backend
   - `capstone` - project directory.
 
 ## Possible Enhancements
