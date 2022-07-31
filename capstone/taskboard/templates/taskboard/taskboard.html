@@ -88,13 +88,20 @@
           <div class="card-body task-card-body">
             {% check_deadline_of_task task.id as gotDeadline %}
             {% if gotDeadline %}
-              <p class="card-text">Deadline: <strong>{{task.deadline}}</strong></p>
+              {% diff_task_deadline_and_today task.id as diffDays %}
+              {% if diffDays < 0 %}
+                <p class="card-text">Deadline: <strong class="text-danger">{{task.deadline}} (OVER)</strong></p>
+              {% elif diffDays < 7 %}
+                <p class="card-text">Deadline: <strong class="text-warning">{{task.deadline}} (In {{diffDays}} days)</strong></p>
+              {% else %}
+                <p class="card-text">Deadline: <strong class="text-primary">{{task.deadline}}</strong></p>
+              {% endif %}
             {% endif %}
             {% if taskboardIsGrp %}
               {% print_assignee_of_task task.assignee user as assignee_name %}
-              <p class="card-text">Assigned to: <strong>{{ assignee_name }}</strong></p>
+              <p class="card-text">Assigned to: <strong class="text-primary">{{ assignee_name }}</strong></p>
             {% endif %}
-            <p><a data-bs-toggle="collapse" href="#task_description_collapse_{{task.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">See description</a></p>
+            <p><a data-bs-toggle="collapse" href="#task_description_collapse_{{task.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1" class="collapse-description-link">See description</a></p>
             <div class="collapse multi-collapse" id="task_description_collapse_{{task.id}}">
               <p class="card-text">{{task.description}}</p>
             </div>
@@ -124,9 +131,12 @@
               </div>
             </div>
             <div class="card-body task-card-body">
-              <p class="card-text">Deadline: {{task.deadline}}</p>
+              {% check_deadline_of_task task.id as gotDeadline %}
+              {% if gotDeadline %}
+              <p class="card-text">Deadline: <strong class="text-muted">{{task.deadline}}</strong></p>
+              {% endif %}
               {% if taskboardIsGrp %}
-              <p class="card-text">Assigned to: {{task.assignee}}</p>
+              <p class="card-text">Assigned to: <strong class="text-muted">{{task.assignee}}</strong></p>
               {% endif %}
               <p><a data-bs-toggle="collapse" href="#task_description_collapse_{{task.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">See description</a></p>
               <div class="collapse multi-collapse" id="task_description_collapse_{{task.id}}">

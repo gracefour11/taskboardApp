@@ -32,7 +32,12 @@
                             <div class="card" style="margin:5px;">
                                 <div class="card-body card-body-taskboard">
                                     <div class="taskboard-card-top">
-                                        <img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/>
+                                        {% if taskboard.type == "GRP" %}
+                                        <!-- <img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/> -->
+                                        <i class="fas fa-users fa-3x card-chip-img" data-mdb-toggle="tooltip" title="Group"></i>
+                                        {% else %}
+                                        <i class="fas fa-user fa-3x card-chip-img" data-mdb-toggle="tooltip" title="Individual"></i>
+                                        {% endif %}
                                         <h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4>
                                         <div class="dropdown taskboard-card-dropdown">
                                             <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-me" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,7 +63,12 @@
                             <div class="card" style="margin:5px;">
                                 <div class="card-body card-body-taskboard">
                                     <div class="taskboard-card-top">
-                                        <img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/>
+                                        {% if taskboard.type == "GRP" %}
+                                        <!-- <img src="{% static 'taskboard/media/icon.jpg' %}" class="img-fluid card-chip-img"/> -->
+                                        <i class="fas fa-users fa-3x card-chip-img" data-mdb-toggle="tooltip" title="Group"></i>
+                                        {% else %}
+                                        <i class="fas fa-user fa-3x card-chip-img" data-mdb-toggle="tooltip" title="Individual"></i>
+                                        {% endif %}
                                         <h4 class="card-chip-text"><a href="{% url 'go_to_taskboard' taskboard.id %}">{{taskboard.title}}</a></h4>
                                         <div class="dropdown taskboard-card-dropdown">
                                             <a class="icon-dropdown text-right" href="#" id="dropdownMenuLink-others" data-bs-toggle="dropdown" aria-expanded="false">

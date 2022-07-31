@@ -1,16 +1,10 @@
 from django import forms
-from .models import User
-import datetime
 
 TASKBOARD_TYPES = [
     ('IND', 'Individual'),
     ('GRP', 'Group')
 ]
 
-def present_or_future_date(value):
-    if value < datetime.date.today():
-        raise forms.ValidationError("The date cannot be in the past!")
-    return value
 
 class CreateEditTaskboardForm(forms.Form):
     taskboard_name = forms.CharField(label="taskboard_name", max_length=100, required=True)
@@ -22,7 +16,7 @@ class DeleteTaskboardForm(forms.Form):
 
 class CreateEditTaskForm(forms.Form):
     task_name = forms.CharField(label="task_name", max_length=100, required=True)
-    task_deadline = forms.DateField(widget=forms.SelectDateWidget, required=False, validators=[present_or_future_date])
+    task_deadline = forms.DateField(widget=forms.SelectDateWidget, required=False)
     task_assignee = forms.CharField(label="task_assignee", max_length=100, required=False)
     task_description = forms.CharField(label="task_description", max_length=500, required=True)
 

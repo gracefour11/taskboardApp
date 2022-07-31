@@ -2,6 +2,8 @@ from django import template
 from django.db.models.functions import Coalesce
 from ..models import *
 from ..constants import *
+import datetime
+
 register = template.Library()
 
 @register.simple_tag
@@ -52,3 +54,19 @@ def check_deadline_of_task(taskId):
     if task.deadline == None:
         return False
     return True
+
+@register.simple_tag
+def diff_task_deadline_and_today(taskId):
+    task = Task.objects.get(id=taskId)
+    today = datetime.date.today()
+    diff = task.deadline - today
+    return diff.days
+    # if diff.days < 0: #deadline over
+    #     return "R"
+    # elif diff.days <= 7: #deadline due in a week 
+    #     return "Y"
+    # else: #deadline due in more than a week
+    #     return "G"
+        
+
+    

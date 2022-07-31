@@ -57,13 +57,12 @@ body {
 
 .card-body-taskboard {
   padding: 2%;
-  height: 80%;
+  height: 100%;
 }
 .card-chip-img {
-  width: 20%;
-  height:auto;
   float: left;
-  vertical-align: middle;
+  color: darkslategray;
+  padding-left:1%;
 }
 
 .card-chip-text {
@@ -75,7 +74,7 @@ body {
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  
+  height:100%;
 }
 
 .taskboard-card-dropdown {

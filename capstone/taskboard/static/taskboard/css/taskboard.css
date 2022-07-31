@@ -88,3 +88,7 @@ div.scroll {
 .task-checkbox:hover {
     transform: scale(1.1);
 }
+
+.collapse-description-link:hover {
+    text-decoration: underline;
+}
