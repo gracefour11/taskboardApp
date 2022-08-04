@@ -1,6 +1,7 @@
 from .models import *
 from .forms import *
 from .constants import *
+import re
 
 ##########################################################
 ## Returns a list containing difference between 2 lists
@@ -15,8 +16,6 @@ def printLogForTaskboard(name, type, members):
     print("Taskboard: " + name)
     print("New taskboard type: "+ type)
     print("New taskboard members list: " + members)
-    # if (deadline is not None):
-    #     print("New taskboard deadline: " + deadline.strftime('%Y-%m-%d'))
 
 
 ###################################################
@@ -71,3 +70,42 @@ def updateUserRoleInTaskboard(user, taskboard, user_role, request_user):
     user2Taskboard.last_modified_by = request_user
     user2Taskboard.save()
     print("Successfully Removed User2Taskboard: " + user2Taskboard.getDict())
+
+
+def validateAndGenerateTaskboardName(name):
+    taskboards = Taskboard.objects.filter(title__istartswith=name, delete_ind=DELETE_IND_F).values_list('title',flat=True).order_by('title')
+    if taskboards:
+        taskboard_list = list(map(str, list(taskboards)))
+        print("====== taskboard_list ===============")
+        print(taskboard_list)
+
+        filtered_taskboard_seq_list = []
+        regex_pattern = r"(\d+)\b"
+
+        for string in taskboard_list:
+            search_str = re.search(regex_pattern, string)
+            if (search_str): # have seq number in input name
+                if len(string) == len(name):
+                    # if input name is exactly the same as existing taskboard string with number 
+                    return name
+                else:
+                    # input name different from existing taskboard string
+                    filtered_taskboard_seq_list.append(search_str.group())
+            else: # dont have seq number in input name
+                filtered_taskboard_seq_list.append("(0)")
+
+
+        print("====== filtered_taskboard_seq_list ===============")
+        print(filtered_taskboard_seq_list)
+
+        if len(filtered_taskboard_seq_list) > 0 :
+            max_elem = filtered_taskboard_seq_list[-1]
+            max_elem = max_elem.replace('(', '').replace(')','')
+            max_elem_int = int(max_elem)
+            max_elem_int += 1
+            return name + " (" + str(max_elem_int) + ")"
+    
+    else:
+        return name
+
+

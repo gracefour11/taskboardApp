@@ -143,6 +143,7 @@ def create_taskboard(request):
             printLogForTaskboard(name, type, members)
 
             if (len(name) > 0 and len(type) > 0):
+                name = validateAndGenerateTaskboardName(name)
                 # insert taskboard into db
                 taskboard = Taskboard(title=name, type=type, created_by=request.user, last_modified_by=request.user)
                 taskboard.save()
@@ -189,14 +190,12 @@ def edit_taskboard(request, boardId):
         if form.is_valid():
             name = form.cleaned_data["taskboard_name"]
             type = form.cleaned_data["taskboard_type"]
-            # deadline = form.cleaned_data["taskboard_deadline"]
             members = form.cleaned_data["taskboard_members"]
 
             printLogForTaskboard(name, type, members)
             
-            taskboard.title = name
+            taskboard.title = validateAndGenerateTaskboardName(name)
             taskboard.type = type
-            # taskboard.deadline = deadline
             taskboard.last_modified_by = request.user
             taskboard.save()
 
@@ -218,6 +217,7 @@ def update_taskboard_members(request, boardId, newMembersAsStr):
     print("====== PRINT CURRENT MEMBERS LIST ===============")
     print(currMembers_list)
     newMembers_list = newMembersAsStr.split(",")
+    newMembers_list = [i for i in newMembers_list if i]
     print("====== PRINT NEW MEMBERS LIST ===============")
     print(newMembers_list)
     diff_list = getDiffBtnLists(currMembers_list, newMembers_list)
