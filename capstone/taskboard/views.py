@@ -86,7 +86,7 @@ def index(request):
         tb_dict = retrieveTaskboardsForIndex(request)
         allTBSOwnedByMe = tb_dict['allTBSOwnedByMe']
         allTBSOwnedByOthers = tb_dict['allTBSOwnedByOthers']
-
+        print(allTBSOwnedByMe)
         return render(request, "taskboard/index.html", {
             'form': form,
             'allTBSOwnedByMe': allTBSOwnedByMe,
@@ -118,8 +118,8 @@ def retrieveTaskboardsForIndex(request):
     allTBSOwnedByOthers = Taskboard.objects.filter(user2taskboard__user=user, user2taskboard__user_role=USER_ROLE_MEMBER, delete_ind=DELETE_IND_F, user2taskboard__delete_ind=DELETE_IND_F)
 
     return {
-        'allTBSOwnedByMe': allTBSOwnedByMe,
-        'allTBSOwnedByOthers': allTBSOwnedByOthers
+        'allTBSOwnedByMe': allTBSOwnedByMe if allTBSOwnedByMe.exists() else "None",
+        'allTBSOwnedByOthers': allTBSOwnedByOthers if allTBSOwnedByOthers.exists() else "None"
     }
 
 

@@ -26,6 +26,13 @@
             </ul>
             <div class="tab-content" style="padding: 2%;">
                 <div id="tbOwnedByMe-contents" class="tab-pane active">
+                    {% if allTBSOwnedByMe == "None" %}
+                    <center>
+                        <br>
+                        <h4 class="no-records-msg text-muted"><a href='#' onclick="createTaskboard();">Create a new Taskboard</a> to get started!</h4>
+                        <img class="logo" src="{% static 'taskboard/media/icon.jpg' %}">
+                    </center>
+                    {% else %}
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         {% for taskboard in allTBSOwnedByMe %}
                         <div class="col">
@@ -53,10 +60,18 @@
                             </div>
                         </div>
 
-                        {% endfor %}
+                        {% endfor %} 
                     </div>
+                    {% endif %}
                 </div>
                 <div id="tbOwnedByOthers-contents" class="tab-pane fade">
+                    {% if allTBSOwnedByOthers == "None" %}
+                    <center>
+                        <br>
+                        <h4 class="no-records-msg text-muted">No taskboards found!</h4>
+                        <img class="logo" src="{% static 'taskboard/media/icon.jpg' %}">
+                    </center>
+                    {% else %}
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         {% for taskboard in allTBSOwnedByOthers %}
                         <div class="col">
@@ -82,9 +97,9 @@
                                 </div>
                             </div>
                         </div>
-
                         {% endfor %}
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
