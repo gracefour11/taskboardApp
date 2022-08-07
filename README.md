@@ -1,7 +1,7 @@
 # CS50W Capstone: Taskboard
 This is a Taskboard app inspired by Jira and Trello boards. Users can create their own taskboards and share them with other members of the app. They can create, manage and assign tasks on a full-screen Kanban board.
 
-I've been working as a software engineer for over a year now and learnt about the Agile Methodology. One of the Agile tools covered was the Jira board which serves as an efficient project tracking tool that allows visualisation of the project's progress. It made me realise, this would be a really useful tool to have had back in my university days... especially in tracking assignment deadlines etc. 
+I've been working as a software engineer for over a year now and learnt about the Agile Methodology. One of the Agile tools covered was the Jira board which serves as an efficient project tracking tool that allows visualisation of the project's progress. It made me realise, this would be a really useful tool to have back in my university days... especially in tracking assignment deadlines etc. 
 
 Hence, when I was deciding what to do for my capstone project, I immediately thought of creating a Taskboard app targetted for both students and (software) project teams. 
 
