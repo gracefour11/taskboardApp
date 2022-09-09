@@ -33,6 +33,10 @@
             <!-- <br> -->
             <div class="tab-content mb-3 mt-3">
                 <div id="login-contents" class="tab-pane active" >
+                    {% if error is not None %}
+                        <span class="note note-danger">{{ error }}</span>
+                        <br><br>
+                    {% endif %}
                     <form action="{% url 'login' %}" method="post">
                         {% csrf_token %}
                         <div class="form-group mb-3">

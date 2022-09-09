@@ -246,6 +246,11 @@ function openDeleteTaskboardModal(boardId, isOwner, boardType) {
             document.getElementById('new_owner_name').innerHTML = "";
             // 1. showing the existing members in chips
             taskboard_members = data["taskboard_members"]
+            const select_none_option = document.createElement('option');
+            select_none_option.value = null;
+            select_none_option.innerHTML = null;
+            select_none_option.disabled = true;
+            document.getElementById('new_owner_name').append(select_none_option);
             for (member in taskboard_members) {
                 const member_option = document.createElement('option');
                 member_option.value = taskboard_members[member]["username"];
@@ -259,6 +264,16 @@ function openDeleteTaskboardModal(boardId, isOwner, boardType) {
     }
 }
 
+function deleteForAll() {
+    console.log("deleting for all");
+    document.getElementById('new_owner_name').value = '';
+    if (document.getElementById('delete_taskboard_checkbox').checked === true) {
+        document.getElementById('new_owner_name').disabled = true;
+    } else {
+        document.getElementById('new_owner_name').disabled = false;
+    }
+    
+}
 
 // close the taskboard modal
 function closeDeleteTaskboardModal() {

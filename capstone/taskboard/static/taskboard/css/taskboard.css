@@ -45,15 +45,34 @@ div.scroll {
     border-color:lightblue; 
     border-style:solid; 
     margin:1%; 
-    height:80vh;
     padding: 1%;
-    overflow-y: auto;
 }
 
-/*Remove the scrollbar from Chrome, Safari, Edge and IE*/
+.section-body {
+    overflow: auto;
+    overflow-y: visible;
+    height:60vh;
+}
+
 ::-webkit-scrollbar {
-    width: 0px;
+    width: 10px;
     background: transparent;
+}
+
+::-webkit-scrollbar:hover {
+    width: 10px;
+    background-color: gainsboro;
+}
+
+::-webkit-scrollbar-track:hover {
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb{
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb:hover{
+    background-color: slategrey;
 }
 
 #taskboard-top-menu {

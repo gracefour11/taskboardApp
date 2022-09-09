@@ -52,7 +52,7 @@
                                             </a>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-me">
                                                 <li><a class="dropdown-item" href="#" onclick="editTaskboard(`{{taskboard.id}}`)">Edit</a></li>
-                                                <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `T`, `{{taskboard.type}}`)">Leave</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `T`, `{{taskboard.type}}`)">Delete</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -195,12 +195,18 @@
                                     <select class="form-select" aria-label="Default select example" id="new_owner_name" name="new_owner_name">
                                     </select>
                                 </div> 
-                            </div> 
+                            </div>
+                            <br>
+                            <span>
+                            <input type="checkbox" id="delete_taskboard_checkbox" onclick="deleteForAll()">
+                            &nbsp;&nbsp;&nbsp;
+                            <label for="delete_taskboard_checkbox"><p>Delete for All</p></label>
+                            </span> 
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteTaskboardModal();">Cancel</button>
-                            <button type="submit" class="btn btn-primary" id="delete-taskboard-btn"> Leave </button>
+                            <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteTaskboardModal();">No</button>
+                            <button type="submit" class="btn btn-primary" id="delete-taskboard-btn"> Yes </button>
                         </div>
                     </form>
                 </div><!-- /.modal-content -->

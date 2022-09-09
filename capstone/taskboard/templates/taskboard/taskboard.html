@@ -21,7 +21,7 @@
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-me">
         {% if isOwner %}
           <li><a class="dropdown-item" href="#" onclick="editTaskboard(`{{taskboard.id}}`)">Edit</a></li>
-          <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `T`, `{{taskboard.type}}`)">Leave</a></li>
+          <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, `T`, `{{taskboard.type}}`)">Delete</a></li>
         {% else %} 
           <li><a class="dropdown-item" href="#" onclick="openDeleteTaskboardModal(`{{taskboard.id}}`, 'F', `{{taskboard.type}}`)">Leave</a></li>
         {% endif %}
@@ -55,6 +55,7 @@
           <i class="fas fa-plus-circle"></i>
           Add New Task
         </a> 
+        <div class="section-body">
         {% get_uncompleted_tasks_in_section section.id taskboard.id as uncompleted_tasks %}
         {% for task in uncompleted_tasks %}
         <div class="card task-card">
@@ -91,15 +92,17 @@
               {% diff_task_deadline_and_today task.id as diffDays %}
               {% if diffDays < 0 %}
                 <p class="card-text">Deadline: <strong class="text-danger">{{task.deadline}} (OVER)</strong></p>
+              {% elif diffDays == 0 %} 
+              <p class="card-text">Deadline: <strong class="text-danger">{{task.deadline}} (TODAY)</strong></p>
               {% elif diffDays < 7 %}
                 <p class="card-text">Deadline: <strong class="text-warning">{{task.deadline}} (In {{diffDays}} days)</strong></p>
               {% else %}
-                <p class="card-text">Deadline: <strong class="text-primary">{{task.deadline}}</strong></p>
+                <p class="card-text">Deadline: <strong class="text-success">{{task.deadline}}</strong></p>
               {% endif %}
             {% endif %}
             {% if taskboardIsGrp %}
               {% print_assignee_of_task task.assignee user as assignee_name %}
-              <p class="card-text">Assigned to: <strong class="text-primary">{{ assignee_name }}</strong></p>
+              <p class="card-text">Assigned to: <strong class="text-dark">{{ assignee_name }}</strong></p>
             {% endif %}
             <p><a data-bs-toggle="collapse" href="#task_description_collapse_{{task.id}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1" class="collapse-description-link">See description</a></p>
             <div class="collapse multi-collapse" id="task_description_collapse_{{task.id}}">
@@ -145,6 +148,7 @@
             </div>
           </div>
           {% endfor %}    
+        </div>
         </div>
       </div>
     
@@ -347,12 +351,18 @@
                                 <select class="form-select" aria-label="Default select example" id="new_owner_name" name="new_owner_name">
                                 </select>
                             </div> 
-                        </div> 
+                        </div>
+                        <br>
+                        <span>
+                          <input type="checkbox" id="delete_taskboard_checkbox" onclick="deleteForAll()">
+                          &nbsp;&nbsp;&nbsp;
+                          <label for="delete_taskboard_checkbox"><p>Delete for All</p></label>
+                        </span> 
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteTaskboardModal();">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="delete-taskboard-btn"> Leave </button>
+                        <button type="button" class="btn btn-light" data-mdb-ripple-color="dark" data-dismiss="modal" onclick="closeDeleteTaskboardModal();">No</button>
+                        <button type="submit" class="btn btn-primary" id="delete-taskboard-btn"> Yes </button>
                     </div>
                 </form>
             </div><!-- /.modal-content -->

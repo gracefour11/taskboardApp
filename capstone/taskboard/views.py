@@ -29,7 +29,9 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
-            return HttpResponseRedirect(reverse("welcome"))
+            return render(request, "taskboard/welcome.html", {
+                "error": "Wrong Username/Password entered. Please try again."
+            })
     else:
         return render(request, "taskboard/welcome.html")
 
@@ -269,7 +271,7 @@ def get_taskboard_contents(request, boardId):
 def delete_taskboard(request, boardId):
     taskboard = Taskboard.objects.get(id=boardId)
     user = request.user
-    user2Taskboard = User2Taskboard.objects.get(user=user, taskboard=taskboard)
+    user2Taskboard = User2Taskboard.objects.filter(user=user, taskboard=taskboard).latest('id')
     if (request.method == "POST"):
         form = DeleteTaskboardForm(request.POST)
         print(form.errors)
@@ -282,7 +284,7 @@ def delete_taskboard(request, boardId):
                     logical_delete_user2taskboard(taskboard, user)
                 else:
                     # Case 2a: Owned by Me and Group: Leave Taskboard and assign new owner
-                    if newOwner_name is not None: # delete taskboard and all associated user2taskboards
+                    if newOwner_name is not None and newOwner_name != "": # delete taskboard and all associated user2taskboards
                         newOwner = User.objects.get(username=newOwner_name)
                         updateUserRoleInTaskboard(newOwner, taskboard, USER_ROLE_OWNER, user)
                         removeUserFromTaskboard(user, taskboard, user)

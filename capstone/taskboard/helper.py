@@ -30,7 +30,7 @@ def logical_delete_taskboard(taskboard, request_user):
 ### FUNCTION TO LOGICALLY DELETE ALL USER2TASKBOARDS UNDER TASKBOARD
 ###################################################
 def logical_delete_user2taskboards_under_taskboard(taskboard, request_user):
-    User2Taskboard.filter(taskboard=taskboard, delete_ind=DELETE_IND_F).update(delete_ind=DELETE_IND_T, last_modified_by=request_user)
+    User2Taskboard.objects.filter(taskboard=taskboard, delete_ind=DELETE_IND_F).update(delete_ind=DELETE_IND_T, last_modified_by=request_user)
 
 ###################################################
 ### FUNCTION TO LOGICALLY DELETE USER2TASKBOARD
@@ -56,7 +56,7 @@ def addUserToTaskboard(user, taskboard, user_role, request_user):
 ### FUNCTION TO REMOVE USER TO TASKBOARD
 ###################################################
 def removeUserFromTaskboard(user, taskboard, request_user):
-    user2Taskboard = User2Taskboard.objects.get(user=user, taskboard=taskboard, delete_ind=DELETE_IND_F)
+    user2Taskboard = User2Taskboard.objects.filter(user=user, taskboard=taskboard, delete_ind=DELETE_IND_F).latest('id')
     logical_delete_user2taskboard(user2Taskboard, request_user)
     print("Successfully Removed User2Taskboard: " + user.username + " from " + taskboard.title)
 
@@ -65,7 +65,7 @@ def removeUserFromTaskboard(user, taskboard, request_user):
 ### FUNCTION TO UPDATE USER ROLE IN TASKBOARD
 ###################################################
 def updateUserRoleInTaskboard(user, taskboard, user_role, request_user):
-    user2Taskboard = User2Taskboard.objects.get(user=user, user_role=USER_ROLE_MEMBER, taskboard=taskboard, delete_ind=DELETE_IND_F)
+    user2Taskboard = User2Taskboard.objects.filter(user=user, user_role=USER_ROLE_MEMBER, taskboard=taskboard, delete_ind=DELETE_IND_F).latest('id')
     user2Taskboard.user_role = user_role
     user2Taskboard.last_modified_by = request_user
     user2Taskboard.save()
