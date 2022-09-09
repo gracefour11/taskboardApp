@@ -12,7 +12,8 @@ The project was built using Django as a backend framework and JavaScript as a fr
 
 All webpages of the project are mobile-responsive with the inclusion of Material Bootstrap library.
 
-The difference between this web app and previous projects is that this application makes use and manages the data to create/read/update/delete taskboards, sections and tasks instantly.
+The difference between this web app and previous projects is that this application makes use and manages the data to create/read/update/delete taskboards, sections and tasks instantly. 
+Modal forms are used so that forms don't have to be opened in new pages. Custom Django template tags were also made to retrieve specific taskboard, section and task details.
 
 
 ## Installation
@@ -55,3 +56,11 @@ The difference between this web app and previous projects is that this applicati
   - Do a Drag and Drop style for tasks on the taskboard page
   - Use Django Channels to introduce real-time updates for Group Taskboards
   - Perhaps, once Django Channels is integrated, a group chat function within the taskboard can be done (similar to a Zoom meeting room chat)
+
+
+## Acknowledgements and References
+Referenced the previous projects and distribution code written by the staff for us.
+[Django Documentation](https://docs.djangoproject.com/en/)
+[Custom Django Template Tags](https://docs.djangoproject.com/en/4.1/howto/custom-template-tags/)
+[Mdbootstrap](https://mdbootstrap.com/)
+
